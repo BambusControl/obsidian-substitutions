@@ -1,6 +1,15 @@
 import {App, Plugin, PluginManifest} from "obsidian";
-import {ChangeSpec, EditorState, StateEffect, StateField} from "@codemirror/state";
+import {
+    ChangeSpec,
+    EditorSelection,
+    EditorState,
+    Extension,
+    StateEffect,
+    StateField, Text,
+    Transaction, TransactionSpec
+} from "@codemirror/state";
 import {EditorView, ViewUpdate} from "@codemirror/view";
+import * as repl from "node:repl";
 
 export default class UnicodeSearchPlugin extends Plugin {
 
@@ -14,24 +23,10 @@ export default class UnicodeSearchPlugin extends Plugin {
     override onload() {
         console.debug("Loading `substitutions` plugin.")
 
-        type ViewUpdater = (viewUpdate: ViewUpdate) => void
-        const stateFieldUpdater = StateField.define<ViewUpdater>({
-            create: (state) => {
-                return (viewUpdate: ViewUpdate) => {
-                    console.log("viewUpdate create")
-                };
-            },
-            update: (value, tx) => {
-                return inputGetter(0)
-            },
-            provide: (field) => {
-                return EditorView.updateListener.from(field);
-            }
-        })
 
         console.log("Registering substitution")
         this.registerEditorExtension([
-            stateFieldUpdater,
+            fieldCharacterRecorder,
         ]);
     }
 }
@@ -61,3 +56,79 @@ function inputGetter(value: number): (viewUpdate: ViewUpdate) => void {
         }
     }
 }
+
+type CharacterRecord = string
+type ViewUpdateEffect = (update: ViewUpdate) => void
+
+type Med = {
+    change: TransactionSpec | null
+}
+
+const SUBS = {
+    from: "-->",
+    to: "→"
+}
+
+const fieldCharacterRecorder = StateField.define<Med>({
+    create(state: EditorState): Med {
+        /* Initialize with empty string */
+        return {
+            change: null,
+        }
+    },
+
+    update(value: Med, tx: Transaction): Med {
+        if (value.change != null) {
+            console.log("Value was changed previously, nulling")
+            return {
+                change: null,
+            }
+        }
+
+        if (!tx.docChanged) {
+            /* Ignore when text wasn't changed */
+            return value;
+        }
+
+        const type = tx.isUserEvent("input.type") ? "INPUT"
+            : tx.isUserEvent("delete.backward") ? "DELETE"
+                : null;
+
+        if (type == null) {
+            return value;
+        }
+
+        const tselection = tx.selection!;
+        const cursorPos = tselection?.asSingle().main.head;
+        const textBeforeCursor = tx.state.doc.slice(Math.max(0, cursorPos - SUBS.from.length), cursorPos).text[0] as String;
+
+        if (textBeforeCursor === SUBS.from) {
+            const ntx = tx.state.update({
+                changes: {
+                    from: cursorPos - SUBS.from.length,
+                    to: cursorPos,
+                    insert: SUBS.to,
+                }
+            })
+
+            return {
+                change: ntx,
+            };
+        }
+
+        return value
+    },
+
+    provide(field: StateField<Med>): Extension {
+        return EditorView.updateListener.from<Med>(
+            field,
+            (current) => (update) => {
+                if (current.change == null) {
+                    return;
+                }
+
+                update.view.dispatch(current.change);
+            }
+        );
+    }
+})
