@@ -27,6 +27,9 @@ const buildOptions = {
 	bundle: true,
 	external: [
 		"obsidian",
+        /* Every codemirror import must be listed. */
+        "@codemirror/state",
+		"@codemirror/view",
 		...builtins,
 	],
 	format: "cjs",
