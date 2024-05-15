@@ -1,0 +1,24 @@
+# IntelliJ Idea
+/.idea/
+
+# Visual Studio Code
+/.vscode/
+
+# NPM
+/node_modules/
+
+# Build output
+/dist/
+
+# Exclude sourcemaps
+*.map
+
+# Obsidian
+/data.json
+
+# Exclude macOS Finder (System Explorer) View States
+.DS_Store
+
+/.ignore/
+
+/coverage/
