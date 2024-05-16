@@ -21,6 +21,8 @@
   "dependencies": {
   },
   "devDependencies": {
+    "@codemirror/language": "^6.9.3",
+    "@codemirror/state": "^6.3.3",
     "@types/jest": "^29.5.8",
     "@types/node": "^18.11.18",
     "@types/papaparse": "^5.3.7",

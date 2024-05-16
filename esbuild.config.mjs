@@ -30,6 +30,7 @@ const buildOptions = {
         /* Every codemirror import must be listed. */
         "@codemirror/state",
 		"@codemirror/view",
+        "@codemirror/language",
 		...builtins,
 	],
 	format: "cjs",
