@@ -1,9 +1,20 @@
-import {EditorSelection, EditorState, Extension, MapMode, StateEffect, TransactionSpec} from "@codemirror/state";
+import {
+    ChangeDesc,
+    EditorSelection,
+    EditorState,
+    Extension,
+    StateEffect,
+    StateField, Transaction,
+    TransactionSpec
+} from "@codemirror/state";
 import {EditorView} from "@codemirror/view"
+
+/* TODO: recording text also grabs it and doesn't write it down. */
 
 export function substitution(): Extension {
     return [
         inputHandler,
+        sf,
     ]
 }
 
@@ -24,21 +35,41 @@ const inputHandler = EditorView.inputHandler.of((view, from, to, text, getTx) =>
         return false;
     }
 
-    /* TODO: State Logic */
-    cac = (cac + text).slice(-3);
-    console.log("Process:", text, "; Cache:", cac)
+    console.log("Before", view.state)
+    const tx = createTx(view.state, text);
+    console.log("After", tx)
 
-    if (SUBS.from !== cac) {
-        console.log(SUBS.from, " !== ", cac)
-        return false;
-    }
-
-    view.dispatch(
-        replaceText(view.state, SUBS.from, SUBS.to)
-    )
+    view.dispatch(tx);
 
     return true;
 })
+
+function createTx(state: EditorState, text: string): TransactionSpec {
+    const sfv = state.field(sf, false) ?? {...sfTypeDefault};
+
+    return SUBS.from === sfv.cache
+        ? replaceText(state, SUBS.from, SUBS.to)
+        : recordText(state, text);
+}
+
+function recordText(state: EditorState, text: string): TransactionSpec {
+    const from = state.selection.main.head;
+
+    return state.update({
+        selection: EditorSelection.cursor(from + 1),
+        changes: [
+            {
+                insert: text,
+                from: from,
+                to: from,
+            }
+        ],
+        userEvent: "input.type",
+        effects: [
+            fx.record.of(text),
+        ],
+    });
+}
 
 function replaceText(state: EditorState, source: string, replacement: string): TransactionSpec {
     const changes = state.changeByRange((range) => {
@@ -60,6 +91,12 @@ function replaceText(state: EditorState, source: string, replacement: string): T
                     to: replacementRange.to,
                 },
             ],
+            effects: [
+                fx.replace.of({
+                    from: source,
+                    to: replacement,
+                }),
+            ]
         }
     })
 
@@ -72,14 +109,67 @@ function replaceText(state: EditorState, source: string, replacement: string): T
     );
 }
 
-// const closeBracketEffect = () => StateEffect.define<number>({
-//     map(value, mapping) {
-//         let mapped = mapping.mapPos(value, -1, MapMode.TrackAfter)
-//         return mapped == null ? undefined : mapped
-//     }
-// })
+type FxType = object;
+type SfType = {
+    cache: string,
+    replaced: boolean,
+    subs: SubstitutionString | null,
+};
 
-let cac = ""
+const sfTypeDefault: SfType = {
+    cache: "",
+    replaced: false,
+    subs: null,
+}
+
+const fx = {
+    record: StateEffect.define<string>(),
+    replace: StateEffect.define<SubstitutionString>(),
+    revert: StateEffect.define(),
+}
+
+const sf = StateField.define<SfType>({
+    create(state) {
+        return {...sfTypeDefault};
+    },
+    update(value, transaction) {
+        for (const eff of transaction.effects) {
+            if (eff.is(fx.record)) {
+                console.debug("fx.record:", value.cache, "+=", eff.value)
+                return {
+                    ...sfTypeDefault,
+                    cache: (value.cache + eff.value).slice(-3),
+                }
+            } else if (eff.is(fx.replace)) {
+                console.debug("fx.replace")
+                return {
+                    ...sfTypeDefault,
+                    subs: {
+                        from: eff.value.from,
+                        to: eff.value.to,
+                    }
+                }
+            } else if (eff.is(fx.revert)) {
+                console.debug("fx.revert")
+                return {
+                    ...sfTypeDefault
+                }
+            }
+        }
+
+        return value;
+    },
+})
+
+type SubstitutionString = {
+    from: string,
+    to: string,
+}
+
+type StringRecord = {
+    position: number,
+    text: string,
+}
 
 const SUBS = {
     from: "-->",
