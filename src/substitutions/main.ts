@@ -4,6 +4,8 @@ import {SettingTab} from "./components/settingTab";
 import {RootPluginDataStorage} from "./services/impl/rootPluginDataStorage";
 import {NewDataInitializer} from "./services/impl/newDataInitializer";
 
+import {SubstitutionsStorage} from "./services/impl/substitutionsStorage";
+
 /* Used by Obsidian */
 // noinspection JSUnusedGlobalSymbols
 export default class SubstitutionsPlugin extends Plugin {
@@ -23,6 +25,7 @@ export default class SubstitutionsPlugin extends Plugin {
 
         const dataStore = new RootPluginDataStorage(this);
         const initializer = new NewDataInitializer(dataStore);
+        const substitutionStorage = new SubstitutionsStorage(dataStore);
 
         await initializer.initializeData();
 
@@ -38,6 +41,7 @@ export default class SubstitutionsPlugin extends Plugin {
         this.addSettingTab(new SettingTab(
             this.app,
             this,
+            substitutionStorage,
         ))
 
         console.timeEnd("Substitutions load time");

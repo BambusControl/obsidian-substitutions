@@ -1,18 +1,44 @@
 import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
+import {SubstitutionsStore} from "../services/substitutionsStore";
+import {substitutionRecord} from "../../libraries/helpers/substitutionRecord";
+import {PersistCache} from "../../libraries/types/persistCache";
+import {ModifiableSubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
+import {Action} from "../../libraries/types/savedata/action";
+
+function newDude() {
+    return {
+        ...{
+            from: "",
+            to: "",
+            enabled: true,
+        },
+        ...{
+            id: -1,
+            action: Action.Create,
+        }
+    };
+}
 
 export class SettingTab extends PluginSettingTab {
 
     private rendered = false;
+    private records: PersistCache<ModifiableSubstitutionRecords>;
 
     constructor(
         app: App,
-        plugin: Plugin
+        plugin: Plugin,
+        dataStore: SubstitutionsStore,
     ) {
         super(app, plugin);
         this.containerEl.addClass("plugin", "substitutions", "setting-tab")
+
+        this.records = new PersistCache(
+            () => dataStore.getSubstitutionRecords(),
+            (data) => dataStore.overwriteSubstitutionRecords(data)
+        );
     }
 
-    override display(): void {
+    override async display(): Promise<void> {
         if (this.rendered) {
             return;
         }
@@ -26,84 +52,44 @@ export class SettingTab extends PluginSettingTab {
         ;
 
         const substitutionsContainer = this.containerEl.createDiv({cls: "substitutions"});
+        const substitutionRecords = await this.records.get();
 
-        substitutionRecord(substitutionsContainer);
-        filledSubstitutionRecord(substitutionsContainer);
+        substitutionRecords.unshift({
+            ...{
+                from: "",
+                to: "",
+                enabled: true,
+            },
+            ...{
+                id: -1,
+                action: Action.Create,
+            }
+        });
+
+        /* TODO: Add new input dynamically, and use flexbox to put it */
+        for (const record of substitutionRecords) {
+            substitutionRecord(
+                substitutionsContainer,
+                record,
+                /* TODO: callbacks */
+                async () => {
+                    substitutionRecords.unshift(newDude());
+
+                    await this.redraw();
+                },
+            );
+        }
 
         this.rendered = true;
     }
-}
 
-function nothing() {
-    return () => {
+    override async hide(): Promise<void> {
+        await this.records.persist();
     }
-}
 
-function getToggleTooltip(value: boolean) {
-    return (value ? "Disable" : "Enable")
-        + " substitution";
-}
-
-function filledSubstitutionRecord(container: HTMLDivElement): Setting {
-    return substitutionRecordTemplate(container, (setting) => setting
-        .setClass("filled-substitution")
-        .addText((c) => c
-            .setPlaceholder("Replace")
-            .onChange((input) => {
-            })
-            .setValue("mevalue")
-        )
-        .addText((c) => c
-            .setPlaceholder("With")
-            .onChange((input) => {
-            })
-            .setValue("mevalue")
-        )
-    );
-}
-
-function substitutionRecord(container: HTMLDivElement): Setting {
-    return substitutionRecordTemplate(container, (setting) => setting
-        .addText((c) => c
-            .setPlaceholder("Replace")
-            .onChange((input) => {
-            })
-        )
-        .addText((c) => c
-            .setPlaceholder("With")
-            .onChange((input) => {
-                const filled = setting.settingEl.hasClass("filled-substitution")
-                const inputEmpty = input === ""
-
-                if (!filled && !inputEmpty) {
-                    /* TODO: move to another substitution */
-                    setting.setClass("filled-substitution");
-                }
-            })
-        )
-    );
-}
-
-function substitutionRecordTemplate(
-    container: HTMLDivElement,
-    settingBuilder: (setting: Setting) => Setting,
-): Setting {
-    const sett = new Setting(container)
-        .setClass("substitution-record")
-        .addToggle((c) => c
-            .setTooltip(getToggleTooltip(c.getValue()))
-            .setValue(true)
-            .onChange((value) => {
-                c.setTooltip(getToggleTooltip(value))
-            })
-        );
-
-    settingBuilder(sett);
-
-    sett.addExtraButton((c) => c
-        .setIcon("x")
-        .setTooltip("Remove substitution")
-    );
-
-    return sett;
+    private async redraw(): Promise<void> {
+        this.rendered = false;
+        this.containerEl.innerHTML = ""
+        await this.display();
+    }
 }
