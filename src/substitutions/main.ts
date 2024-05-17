@@ -1,8 +1,12 @@
 import {App, Plugin, PluginManifest} from "obsidian";
 import {substitution} from "./codemirror/substitution";
 import {SettingTab} from "./components/settingTab";
+import {RootPluginDataStorage} from "./services/impl/rootPluginDataStorage";
+import {NewDataInitializer} from "./services/impl/newDataInitializer";
 
-export default class UnicodeSearchPlugin extends Plugin {
+/* Used by Obsidian */
+// noinspection JSUnusedGlobalSymbols
+export default class SubstitutionsPlugin extends Plugin {
 
     constructor(
         app: App,
@@ -11,17 +15,32 @@ export default class UnicodeSearchPlugin extends Plugin {
         super(app, manifest);
     }
 
-    override onload() {
-        console.debug("Loading `substitutions` plugin.")
+    override async onload(): Promise<void> {
+        console.group("Loading Substitutions plugin");
+        console.time("Substitutions load time");
+
+        console.info("Creating services");
+
+        const dataStore = new RootPluginDataStorage(this);
+        const initializer = new NewDataInitializer(dataStore);
+
+        await initializer.initializeData();
+
+        console.info("Adding editor extension");
 
         /* TODO: Settings Pane with substitution configuration */
         this.registerEditorExtension([
             substitution(),
         ]);
 
+        console.info("Adding UI elements");
+
         this.addSettingTab(new SettingTab(
             this.app,
             this,
         ))
+
+        console.timeEnd("Substitutions load time");
+        console.groupEnd();
     }
 }
