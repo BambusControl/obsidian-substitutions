@@ -1,5 +1,6 @@
 import {App, Plugin, PluginManifest} from "obsidian";
 import {substitution} from "./codemirror/substitution";
+import {SettingTab} from "./components/settingTab";
 
 export default class UnicodeSearchPlugin extends Plugin {
 
@@ -17,5 +18,10 @@ export default class UnicodeSearchPlugin extends Plugin {
         this.registerEditorExtension([
             substitution(),
         ]);
+
+        this.addSettingTab(new SettingTab(
+            this.app,
+            this,
+        ))
     }
 }

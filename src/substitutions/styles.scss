@@ -1,0 +1,67 @@
+.plugin.substitutions {
+
+    &.setting-tab {
+        @media (min-width: 40em) {
+        }
+
+        /*.table-header {
+
+            .setting-item-info {
+                flex-grow: 1;
+            }
+
+            .setting-item-control {
+                flex-grow: 0;
+            }
+
+
+            .setting-item-name {
+                display: flex;
+                justify-content: space-evenly;
+                align-content: center;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+            }
+
+        }*/
+
+        .substitutions > * {
+            border: none;
+            padding: .25em
+        }
+
+        .substitution-record {
+
+            &:not(.filled-substitution) {
+
+                .setting-item-control {
+                    &>:first-child, &>:last-child {
+                        visibility: hidden;
+                    }
+                }
+
+            }
+
+            .setting-item-info {
+                display: none;
+                flex-grow: 0;
+                margin: 0;
+            }
+
+            .setting-item-control {
+                flex-grow: 1;
+                text-align: left;
+
+                display: flex;
+                justify-content: space-evenly;
+                align-content: center;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+            }
+
+        }
+    }
+
+}

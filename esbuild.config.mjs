@@ -1,6 +1,7 @@
 import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
+import {sassPlugin} from "esbuild-sass-plugin";
 import * as fs from "fs/promises";
 
 const banner =
@@ -21,6 +22,7 @@ const buildOptions = {
 	},
 	entryPoints: [
 		`${sourceDir}/main.ts`,
+		`${sourceDir}/styles.scss`,
 	],
 	entryNames: "[name]",
 	outdir: outputDir,
@@ -39,7 +41,12 @@ const buildOptions = {
 	sourcemap: prodBuild ? false : "inline",
 	treeShaking: true,
 	minify: prodBuild,
-	plugins: [],
+	plugins: [
+		sassPlugin({
+			syntax: "scss",
+			style: prodBuild ? "compressed" : "expanded",
+		}),
+	],
 };
 
 try {
