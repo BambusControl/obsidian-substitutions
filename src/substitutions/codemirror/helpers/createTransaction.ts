@@ -14,15 +14,7 @@ export function createTransaction(
     const targetString = sliceText(field, text);
 
     const match = field.matches
-        .find(m => {
-            const replme = targetString.endsWith(m.from);
-            console.log(
-                targetString,
-                replme ? "(ends with)" : "x",
-                m.from,
-            )
-            return replme
-        });
+        .find(m => targetString.endsWith(m.from));
 
     return match == null
         ? recordText(state, text)

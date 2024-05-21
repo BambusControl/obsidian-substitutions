@@ -16,7 +16,7 @@ export function recordText(state: EditorState, text: string): TransactionSpec {
         ],
         userEvent: "input.type",
         effects: [
-            substitutionEffect.record.of(text),
+            substitutionEffect.update.of(text),
         ],
     });
 }

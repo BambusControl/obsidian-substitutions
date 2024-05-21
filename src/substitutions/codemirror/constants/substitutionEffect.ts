@@ -3,8 +3,18 @@ import {StateEffect} from "@codemirror/state";
 import {TextReplacement} from "../type/textReplacement";
 
 export const substitutionEffect = {
-    /* TODO: Check character instead of record */
-    record: StateEffect.define<string>(),
-    replace: StateEffect.define<TextReplacement>(),
+    /**
+     * Update the target string to check for substitution
+     */
+    update: StateEffect.define<string>(),
+
+    /**
+     * Replace target string with a substitute
+     */
+    substitute: StateEffect.define<TextReplacement>(),
+
+    /**
+     * Replace substitution with the former target string.
+     */
     revert: StateEffect.define(),
 }

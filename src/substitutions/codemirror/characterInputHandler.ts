@@ -7,25 +7,25 @@ export function characterInputHandler(
     substitutionField: StateField<SubstitutionState>
 ): Extension {
     return EditorView.inputHandler.of((view, from, to, text) => {
-    const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
+        const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
 
-    if (!viewReadyForInput) {
-        return false;
-    }
+        if (!viewReadyForInput) {
+            return false;
+        }
 
-    console.assert(text.length === 1, text);
-    const primarySelection = view.state.selection.main
+        console.assert(text.length === 1, text);
+        const primarySelection = view.state.selection.main
 
-    const multipleChars = text.length !== 1;
-    const selectionMatch = from === primarySelection.from && to === primarySelection.to;
+        const multipleChars = text.length !== 1;
+        const selectionMatch = from === primarySelection.from && to === primarySelection.to;
 
-    if (multipleChars || !selectionMatch) {
-        return false;
-    }
+        if (multipleChars || !selectionMatch) {
+            return false;
+        }
 
-    const transaction = createTransaction(view.state, text, substitutionField);
-    view.dispatch(transaction);
+        const transaction = createTransaction(view.state, text, substitutionField);
+        view.dispatch(transaction);
 
-    return true;
-});
+        return true;
+    });
 }
