@@ -1,41 +1,23 @@
 import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
 import {SubstitutionsStore} from "../services/substitutionsStore";
-import {substitutionRecord} from "../../libraries/helpers/substitutionRecord";
-import {PersistCache} from "../../libraries/types/persistCache";
-import {ModifiableSubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
 import {Action} from "../../libraries/types/savedata/action";
-
-function newDude() {
-    return {
-        ...{
-            from: "",
-            to: "",
-            enabled: true,
-        },
-        ...{
-            id: -1,
-            action: Action.Create,
-        }
-    };
-}
+import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
+import {SubstitutionRecord} from "../../libraries/types/savedata/substitutionRecord";
+import {ModifiableSubstitutionRecord} from "../../libraries/types/savedata/modifiableSubstitutionRecord";
 
 export class SettingTab extends PluginSettingTab {
 
     private rendered = false;
-    private records: PersistCache<ModifiableSubstitutionRecords>;
+    private storedRecords: SubstitutionRecordSetting[] = [];
+    private newRecords: SubstitutionRecordSetting[] = [];
 
     constructor(
         app: App,
         plugin: Plugin,
-        dataStore: SubstitutionsStore,
+        private readonly dataStore: SubstitutionsStore,
     ) {
         super(app, plugin);
         this.containerEl.addClass("plugin", "substitutions", "setting-tab")
-
-        this.records = new PersistCache(
-            () => dataStore.getSubstitutionRecords(),
-            (data) => dataStore.overwriteSubstitutionRecords(data)
-        );
     }
 
     override async display(): Promise<void> {
@@ -51,45 +33,62 @@ export class SettingTab extends PluginSettingTab {
             .setDesc("Here you can set and enable automatic text substitutions.")
         ;
 
+        const newSubstitutionsContainer = this.containerEl.createDiv({cls: ["substitutions", "new"]});
         const substitutionsContainer = this.containerEl.createDiv({cls: "substitutions"});
-        const substitutionRecords = await this.records.get();
 
-        substitutionRecords.unshift({
-            ...{
-                from: "",
-                to: "",
-                enabled: true,
-            },
-            ...{
-                id: -1,
-                action: Action.Create,
-            }
-        });
+        this.storedRecords = (await this.dataStore.getSubstitutionRecords())
+            .map(sr => new SubstitutionRecordSetting(sr, substitutionsContainer));
 
-        /* TODO: Add new input dynamically, and use flexbox to put it */
-        for (const record of substitutionRecords) {
-            substitutionRecord(
-                substitutionsContainer,
-                record,
-                /* TODO: callbacks */
-                async () => {
-                    substitutionRecords.unshift(newDude());
+        this.newRecords.push(
+            SettingTab.newSubstitutionRecord(newSubstitutionsContainer, this.newRecords)
+        )
 
-                    await this.redraw();
-                },
-            );
+        for (const recordSetting of this.records) {
+            recordSetting.display();
         }
 
         this.rendered = true;
     }
 
     override async hide(): Promise<void> {
-        await this.records.persist();
+        await this.dataStore.overwriteSubstitutionRecords(
+            this.records.map(sr => sr.record)
+        )
     }
 
-    private async redraw(): Promise<void> {
-        this.rendered = false;
-        this.containerEl.innerHTML = ""
-        await this.display();
+    private get records(): SubstitutionRecordSetting[] {
+        return [...this.storedRecords, ...this.newRecords]
     }
+
+    private static newSubstitutionRecord(
+        container: HTMLDivElement,
+        recordSettings: SubstitutionRecordSetting[],
+    ): SubstitutionRecordSetting {
+        return new SubstitutionRecordSetting(
+            newRecord(),
+            container,
+            () => {
+                const setting = SettingTab.newSubstitutionRecord(container, recordSettings)
+                setting.display();
+                recordSettings.unshift(
+                    /* Very peculiar */
+                    SettingTab.newSubstitutionRecord(container, recordSettings)
+                )
+            }
+        );
+    }
+}
+
+function newRecord(): ModifiableSubstitutionRecord {
+    return {
+        ...{
+            from: "",
+            to: "",
+            enabled: true,
+        },
+        ...{
+            id: -1,
+            action: Action.Create,
+        }
+    };
 }

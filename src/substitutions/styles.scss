@@ -26,6 +26,11 @@
 
         }*/
 
+        .substitutions.new {
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
         .substitutions > * {
             border: none;
             padding: .25em

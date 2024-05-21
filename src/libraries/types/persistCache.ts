@@ -4,8 +4,8 @@ export class PersistCache<T> {
     private value?: T;
 
     constructor(
-        private readonly getCallback: () => Promise<T>,
-        private readonly persistCallback: (value: T) => Promise<void>,
+        private readonly getCallback: (() => T) | (() => Promise<T>),
+        private readonly persistCallback: ((value: T) => void) | ((value: T) => Promise<void>),
         initialValue?: T
     ) {
         this.value = initialValue;
