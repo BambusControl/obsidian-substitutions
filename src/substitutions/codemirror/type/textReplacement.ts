@@ -1,4 +1,4 @@
-export type SubstitutionString = {
+export type TextReplacement = {
     from: string,
     to: string,
 }

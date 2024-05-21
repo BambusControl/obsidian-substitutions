@@ -1,8 +1,7 @@
 import {EditorView} from "@codemirror/view";
+import {createTransaction} from "./helpers/createTransaction";
 
-import {createTransaction} from "./createTransaction";
-
-export const inputHandler = EditorView.inputHandler.of(handler)
+export const characterInputHandler = EditorView.inputHandler.of(handler)
 
 function handler(view: EditorView, from: number, to: number, text: string) {
     const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
@@ -21,10 +20,7 @@ function handler(view: EditorView, from: number, to: number, text: string) {
         return false;
     }
 
-    console.log("Before", view.state)
     const transaction = createTransaction(view.state, text);
-    console.log("After", transaction)
-
     view.dispatch(transaction);
 
     return true;

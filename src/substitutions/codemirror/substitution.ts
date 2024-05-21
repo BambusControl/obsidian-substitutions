@@ -1,10 +1,11 @@
 import {Extension} from "@codemirror/state";
-import {inputHandler} from "./inputHandler";
-import {stateField} from "./stateField";
+import {characterInputHandler} from "./characterInputHandler";
+import {textSubstitutionField} from "./textSubstitutionField";
+import {SubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
 
-export function substitution(): Extension {
+export function substitution(substitutionRecords: SubstitutionRecords): Extension {
     return [
-        inputHandler,
-        stateField,
-    ]
+        characterInputHandler,
+        textSubstitutionField(substitutionRecords),
+    ];
 }

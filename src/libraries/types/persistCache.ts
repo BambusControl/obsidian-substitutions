@@ -1,11 +1,12 @@
 import {SubstitutionsError} from "../../substitutions/errors/substitutionsError";
+import {MaybePromise} from "./maybePromise";
 
 export class PersistCache<T> {
     private value?: T;
 
     constructor(
-        private readonly getCallback: (() => T) | (() => Promise<T>),
-        private readonly persistCallback: ((value: T) => void) | ((value: T) => Promise<void>),
+        private readonly getCallback: () => MaybePromise<T>,
+        private readonly persistCallback: (value: T) => MaybePromise<void>,
         initialValue?: T
     ) {
         this.value = initialValue;

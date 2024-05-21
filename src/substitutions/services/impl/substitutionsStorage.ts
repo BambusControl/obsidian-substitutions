@@ -1,5 +1,8 @@
 import {RootDataStore} from "../rootDataStore";
-import {ModifiableSubstitutionRecords} from "../../../libraries/types/savedata/substitutionRecords";
+import {
+    ModifiableSubstitutionRecords,
+    SubstitutionRecords
+} from "../../../libraries/types/savedata/substitutionRecords";
 import {SubstitutionsStore} from "../substitutionsStore";
 import {recordFilled} from "../../../libraries/helpers/recordFilled";
 import {toModifiable} from "../../../libraries/helpers/toModifiable";
@@ -12,9 +15,13 @@ export class SubstitutionsStorage implements SubstitutionsStore {
     ) {
     }
 
-    async getSubstitutionRecords(): Promise<ModifiableSubstitutionRecords> {
-        const substitutions = await this.store.getSubstitutions();
-        return substitutions.records.map(toModifiable);
+    async getSubstitutionRecords(): Promise<SubstitutionRecords> {
+        return (await this.store.getSubstitutions()).records;
+    }
+
+    async getModifiableSubstitutionRecords(): Promise<ModifiableSubstitutionRecords> {
+        const substitutions = await this.getSubstitutionRecords();
+        return substitutions.map(toModifiable);
     }
 
     async overwriteSubstitutionRecords(modifiedRecords: ModifiableSubstitutionRecords): Promise<void> {

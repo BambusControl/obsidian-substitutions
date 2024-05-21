@@ -1,9 +1,7 @@
 import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
 import {SubstitutionsStore} from "../services/substitutionsStore";
-import {Action} from "../../libraries/types/savedata/action";
 import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
-import {SubstitutionRecord} from "../../libraries/types/savedata/substitutionRecord";
-import {ModifiableSubstitutionRecord} from "../../libraries/types/savedata/modifiableSubstitutionRecord";
+import {newModifiableSubstitutionRecord} from "../../libraries/helpers/newModifiableSubstitutionRecord";
 
 export class SettingTab extends PluginSettingTab {
 
@@ -36,7 +34,7 @@ export class SettingTab extends PluginSettingTab {
         const newSubstitutionsContainer = this.containerEl.createDiv({cls: ["substitutions", "new"]});
         const substitutionsContainer = this.containerEl.createDiv({cls: "substitutions"});
 
-        this.storedRecords = (await this.dataStore.getSubstitutionRecords())
+        this.storedRecords = (await this.dataStore.getModifiableSubstitutionRecords())
             .map(sr => new SubstitutionRecordSetting(sr, substitutionsContainer));
 
         this.newRecords.push(
@@ -65,13 +63,13 @@ export class SettingTab extends PluginSettingTab {
         recordSettings: SubstitutionRecordSetting[],
     ): SubstitutionRecordSetting {
         return new SubstitutionRecordSetting(
-            newRecord(),
+            newModifiableSubstitutionRecord(),
             container,
             () => {
                 const setting = SettingTab.newSubstitutionRecord(container, recordSettings)
                 setting.display();
                 recordSettings.unshift(
-                    /* Very peculiar */
+                    /* Very peculiar, recursively defined, but the function wraps it, so it creates it on demand */
                     SettingTab.newSubstitutionRecord(container, recordSettings)
                 )
             }
@@ -79,16 +77,3 @@ export class SettingTab extends PluginSettingTab {
     }
 }
 
-function newRecord(): ModifiableSubstitutionRecord {
-    return {
-        ...{
-            from: "",
-            to: "",
-            enabled: true,
-        },
-        ...{
-            id: -1,
-            action: Action.Create,
-        }
-    };
-}

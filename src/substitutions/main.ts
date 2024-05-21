@@ -19,7 +19,7 @@ export default class SubstitutionsPlugin extends Plugin {
 
     override async onload(): Promise<void> {
         console.group("Loading Substitutions plugin");
-        console.time("Substitutions load time");
+        console.time("Plugin load time");
 
         console.info("Creating services");
 
@@ -31,9 +31,9 @@ export default class SubstitutionsPlugin extends Plugin {
 
         console.info("Adding editor extension");
 
-        /* TODO: Settings Pane with substitution configuration */
+        const records = await substitutionStorage.getSubstitutionRecords();
         this.registerEditorExtension([
-            substitution(),
+            substitution(records),
         ]);
 
         console.info("Adding UI elements");
@@ -44,7 +44,7 @@ export default class SubstitutionsPlugin extends Plugin {
             substitutionStorage,
         ))
 
-        console.timeEnd("Substitutions load time");
+        console.timeEnd("Plugin load time");
         console.groupEnd();
     }
 }

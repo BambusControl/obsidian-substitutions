@@ -1,17 +1,14 @@
 import {EditorSelection, EditorState, TransactionSpec} from "@codemirror/state";
 
-import {effects} from "./effects";
+import {substitutionEffect} from "../constants/substitutionEffect";
 
 export function replaceText(state: EditorState, source: string, replacement: string): TransactionSpec {
     const changes = state.changeByRange((range) => {
         const textLength = source.length - 1;
-
         const replacementRange = EditorSelection.range(range.anchor - textLength, range.head);
 
         const afterCursorPosition = replacementRange.head - textLength + 1;
         const afterRange = EditorSelection.range(afterCursorPosition, afterCursorPosition);
-
-        console.log("Source:", range, "; Replacement:", replacementRange, "; After:", afterRange)
 
         return {
             range: afterRange,
@@ -23,7 +20,7 @@ export function replaceText(state: EditorState, source: string, replacement: str
                 },
             ],
             effects: [
-                effects.replace.of({
+                substitutionEffect.replace.of({
                     from: source,
                     to: replacement,
                 }),
