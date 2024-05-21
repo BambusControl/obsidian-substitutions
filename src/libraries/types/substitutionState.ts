@@ -1,9 +1,9 @@
 import {TextReplacement} from "./textReplacement";
-import {SubstitutionRecordMatches} from "./savedata/substitutionRecords";
+import {SubstitutionRecords} from "./savedata/substitutionRecords";
 
 export type SubstitutionState = {
     cache: string,
     readonly length: number;
-    readonly matches: SubstitutionRecordMatches,
+    readonly matches: SubstitutionRecords,
     substitution: TextReplacement | null,
 };
