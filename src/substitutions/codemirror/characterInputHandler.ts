@@ -1,10 +1,10 @@
 import {EditorView} from "@codemirror/view";
 import {createTransaction} from "./helpers/createTransaction";
-import {SubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
-import {Extension} from "@codemirror/state";
+import {Extension, StateField} from "@codemirror/state";
+import {SubstitutionState} from "./type/substitutionState";
 
 export function characterInputHandler(
-    substitutionRecords: SubstitutionRecords
+    substitutionField: StateField<SubstitutionState>
 ): Extension {
     return EditorView.inputHandler.of((view, from, to, text) => {
     const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
@@ -23,7 +23,7 @@ export function characterInputHandler(
         return false;
     }
 
-    const transaction = createTransaction(view.state, text, substitutionRecords);
+    const transaction = createTransaction(view.state, text, substitutionField);
     view.dispatch(transaction);
 
     return true;

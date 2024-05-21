@@ -1,8 +1,8 @@
+import {SubstitutionState} from "../../type/substitutionState";
+
 export function sliceText(
-    current: string,
-    appended: string,
-    length: number,
+    field: SubstitutionState,
+    newCharacter: string,
 ): string {
-    /* TODO: Length of slice depends on how long the user set substitutions are */
-    return (current + appended).slice(-length);
+    return (field.cache + newCharacter).slice(-field.length)
 }

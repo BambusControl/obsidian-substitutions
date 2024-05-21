@@ -4,8 +4,10 @@ import {textSubstitutionField} from "./textSubstitutionField";
 import {SubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
 
 export function substitution(substitutionRecords: SubstitutionRecords): Extension {
+    const textSubstitution = textSubstitutionField(substitutionRecords);
+
     return [
-        characterInputHandler(substitutionRecords),
-        textSubstitutionField(substitutionRecords),
+        textSubstitution,
+        characterInputHandler(textSubstitution),
     ];
 }

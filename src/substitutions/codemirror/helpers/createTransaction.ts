@@ -1,23 +1,30 @@
-import {EditorState, TransactionSpec} from "@codemirror/state";
+import {EditorState, StateField, TransactionSpec} from "@codemirror/state";
 import {recordText} from "./text/recordText";
 import {replaceText} from "./text/replaceText";
 import {defaultState} from "../constants/defaultState";
-import {textSubstitutionField} from "../textSubstitutionField";
-import {substitutionValue} from "../constants/substitutionValue";
+import {SubstitutionState} from "../type/substitutionState";
 import {sliceText} from "./text/sliceText";
-import {SubstitutionRecords} from "../../../libraries/types/savedata/substitutionRecords";
 
 export function createTransaction(
     state: EditorState,
     text: string,
-    substitutionRecords: SubstitutionRecords,
+    substitutionField: StateField<SubstitutionState>,
 ): TransactionSpec {
-    const sfv = state.field(textSubstitutionField(substitutionRecords), false)
-        ?? defaultState();
+    const field = state.field(substitutionField, false) ?? defaultState();
+    const targetString = sliceText(field, text);
 
-    const cache = sliceText(sfv.cache, text, sfv.length);
+    const match = field.matches
+        .find(m => {
+            const replme = targetString.endsWith(m.from);
+            console.log(
+                targetString,
+                replme ? "(ends with)" : "x",
+                m.from,
+            )
+            return replme
+        });
 
-    return substitutionValue.from === cache
-        ? replaceText(state, substitutionValue.from, substitutionValue.to)
-        : recordText(state, text);
+    return match == null
+        ? recordText(state, text)
+        : replaceText(state, match.from, match.to);
 }
