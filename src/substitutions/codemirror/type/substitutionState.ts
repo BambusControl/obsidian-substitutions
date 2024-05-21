@@ -3,8 +3,7 @@ import {SubstitutionRecordMatches} from "../../../libraries/types/savedata/subst
 
 export type SubstitutionState = {
     cache: string,
-    replaced: boolean,
-    length: number;
-    matches: SubstitutionRecordMatches,
+    readonly length: number;
+    readonly matches: SubstitutionRecordMatches,
     substitution: TextReplacement | null,
 };

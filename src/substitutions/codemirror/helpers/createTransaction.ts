@@ -1,4 +1,4 @@
-import {EditorState, StateField, TransactionSpec} from "@codemirror/state";
+import {EditorState, StateField, Transaction, TransactionSpec} from "@codemirror/state";
 import {recordText} from "./text/recordText";
 import {replaceText} from "./text/replaceText";
 import {defaultState} from "../constants/defaultState";

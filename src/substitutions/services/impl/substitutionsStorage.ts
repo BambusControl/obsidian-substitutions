@@ -25,7 +25,7 @@ export class SubstitutionsStorage implements SubstitutionsStore {
     }
 
     async overwriteSubstitutionRecords(modifiedRecords: ModifiableSubstitutionRecords): Promise<void> {
-        /* TODO: check validity of substitutions */
+        /* TODO [user input sanity check]: validity of substitutions */
         const subs = await this.store.getSubstitutions();
 
         const records = new Array(...modifiedRecords.values())

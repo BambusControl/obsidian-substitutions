@@ -25,7 +25,7 @@ export function replaceText(state: EditorState, source: string, replacement: str
                     from: source,
                     to: replacement,
                 }),
-            ]
+            ],
         }
     })
 

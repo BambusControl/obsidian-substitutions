@@ -1,7 +1,8 @@
 import {Extension} from "@codemirror/state";
 import {characterInputHandler} from "./characterInputHandler";
-import {textSubstitutionField} from "./textSubstitutionField";
 import {SubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
+import {characterDeleteHandler} from "./characterDeleteHandler";
+import {textSubstitutionField} from "./textSubstitutionField";
 
 export function substitution(substitutionRecords: SubstitutionRecords): Extension {
     const textSubstitution = textSubstitutionField(substitutionRecords);
@@ -9,5 +10,6 @@ export function substitution(substitutionRecords: SubstitutionRecords): Extensio
     return [
         textSubstitution,
         characterInputHandler(textSubstitution),
+        characterDeleteHandler(textSubstitution),
     ];
 }

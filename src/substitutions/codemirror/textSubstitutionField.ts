@@ -34,13 +34,13 @@ export function textSubstitutionField(
                     output = {
                         ...output,
                         cache: sliceDoc(transaction.state, output.length),
+                        substitution: null,
                     };
 
                 } else if (effect.is(substitutionEffect.substitute)) {
 
                     output = {
                         ...output,
-                        replaced: true,
                         substitution: {
                             from: effect.value.from,
                             to: effect.value.to,
@@ -49,9 +49,9 @@ export function textSubstitutionField(
 
                 } else if (effect.is(substitutionEffect.revert)) {
 
-                    /* TODO: Revert substitution on backspace */
                     output = {
                         ...output,
+                        substitution: null,
                     };
 
                 }

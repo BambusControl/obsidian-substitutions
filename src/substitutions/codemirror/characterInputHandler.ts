@@ -1,21 +1,24 @@
 import {EditorView} from "@codemirror/view";
-import {createTransaction} from "./helpers/createTransaction";
 import {Extension, StateField} from "@codemirror/state";
 import {SubstitutionState} from "./type/substitutionState";
+import {defaultState} from "./constants/defaultState";
+import {sliceText} from "./helpers/text/sliceText";
+import {recordText} from "./helpers/text/recordText";
+import {replaceText} from "./helpers/text/replaceText";
 
 export function characterInputHandler(
     substitutionField: StateField<SubstitutionState>
 ): Extension {
-    return EditorView.inputHandler.of((view, from, to, text) => {
+    return EditorView.inputHandler.of((view, from, to, text, insert) => {
         const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
 
         if (!viewReadyForInput) {
             return false;
         }
 
-        console.assert(text.length === 1, text);
-        const primarySelection = view.state.selection.main
+        console.assert(text.length === 1, "Registered more than one character, this shouldn't happen");
 
+        const primarySelection = view.state.selection.main
         const multipleChars = text.length !== 1;
         const selectionMatch = from === primarySelection.from && to === primarySelection.to;
 
@@ -23,8 +26,20 @@ export function characterInputHandler(
             return false;
         }
 
-        const transaction = createTransaction(view.state, text, substitutionField);
-        view.dispatch(transaction);
+        const field = view.state.field(substitutionField, false) ?? defaultState();
+        const targetString = sliceText(field, text);
+
+        const match = field.matches
+            .find(m => targetString.endsWith(m.from));
+
+        const transactions = match == null ? [
+            insert(),
+            recordText(view.state, text),
+        ] : [
+            replaceText(view.state, match.from, match.to),
+        ];
+
+        view.dispatch(...transactions);
 
         return true;
     });
