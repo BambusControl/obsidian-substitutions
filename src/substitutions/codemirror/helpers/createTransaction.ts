@@ -5,15 +5,17 @@ import {defaultState} from "../constants/defaultState";
 import {textSubstitutionField} from "../textSubstitutionField";
 import {substitutionValue} from "../constants/substitutionValue";
 import {sliceText} from "./text/sliceText";
-import {SubstitutionsStore} from "../../services/substitutionsStore";
+import {SubstitutionRecords} from "../../../libraries/types/savedata/substitutionRecords";
 
-export async function createTransaction(
+export function createTransaction(
     state: EditorState,
     text: string,
-): Promise<TransactionSpec> {
-    const sfv = state.field(textSubstitutionField, false) ?? defaultState();
+    substitutionRecords: SubstitutionRecords,
+): TransactionSpec {
+    const sfv = state.field(textSubstitutionField(substitutionRecords), false)
+        ?? defaultState();
 
-    const cache = sliceText(sfv.cache, text, sfv.maxLength);
+    const cache = sliceText(sfv.cache, text, sfv.length);
 
     return substitutionValue.from === cache
         ? replaceText(state, substitutionValue.from, substitutionValue.to)

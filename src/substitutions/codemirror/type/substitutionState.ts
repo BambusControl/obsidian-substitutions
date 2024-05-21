@@ -4,6 +4,7 @@ import {SubstitutionRecordMatches} from "../../../libraries/types/savedata/subst
 export type SubstitutionState = {
     cache: string,
     replaced: boolean,
+    length: number;
     matches: SubstitutionRecordMatches,
     substitution: TextReplacement | null,
 };

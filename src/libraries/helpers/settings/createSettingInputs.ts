@@ -12,15 +12,14 @@ export function createSettingInputs(
     record: ModifiableSubstitutionRecord,
     fillCallback: () => MaybePromise<void>,
 ): Setting {
-    const setting = new Setting(container);
+    const setting = new Setting(container)
+        .setClass("substitution-record");
 
-    const classes = [
-        "substitution-record",
-        recordFilled(record) ? "filled-substitution" : ""
-    ].join(" ")
+    if (recordFilled(record)) {
+        setting.setClass("filled-substitution");
+    }
 
     return setting
-        .setClass(classes)
         .addToggle(toggleSubstitution(record))
         .addText(substituteFrom(record, setting, fillCallback))
         .addText(substituteWith(record, setting, fillCallback))

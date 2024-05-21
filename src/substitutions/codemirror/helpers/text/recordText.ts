@@ -1,6 +1,5 @@
 import {EditorSelection, EditorState, TransactionSpec} from "@codemirror/state";
-
-import {substitutionEffect} from "../constants/substitutionEffect";
+import {substitutionEffect} from "../../constants/substitutionEffect";
 
 export function recordText(state: EditorState, text: string): TransactionSpec {
     const cursorPosition = state.selection.main.head;

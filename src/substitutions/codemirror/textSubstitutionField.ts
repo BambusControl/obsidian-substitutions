@@ -14,22 +14,35 @@ export function textSubstitutionField(
         .filter(record => record.enabled)
         .map(toMatch);
 
+    const lengths = potentialMatches
+        .map(pm => pm.from.length);
+
+    const maxLength = Math.max(...lengths);
+
     return StateField.define({
 
         create() {
             return defaultState({
+                length: maxLength,
                 matches: potentialMatches
             });
         },
 
+        /* TODO: Update the potential matches when a character is recorded */
         update(current, transaction) {
             let output = current;
 
             for (const effect of transaction.effects) {
                 if (effect.is(substitutionEffect.record)) {
+                    const slicedText = sliceText(output.cache, effect.value, output.length);
                     output = {
                         ...output,
-                        cache: sliceText(output.cache, effect.value, output.matches.length),
+                        cache: slicedText,
+                        matches: output.matches.map(subsrec => ({
+                            ...subsrec,
+                            couldMatch: subsrec.from.contains(slicedText),
+                            isMatch: subsrec.from === slicedText,
+                        })),
                     };
                 } else if (effect.is(substitutionEffect.replace)) {
                     output = {

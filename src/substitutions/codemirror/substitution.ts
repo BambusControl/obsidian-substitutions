@@ -5,7 +5,7 @@ import {SubstitutionRecords} from "../../libraries/types/savedata/substitutionRe
 
 export function substitution(substitutionRecords: SubstitutionRecords): Extension {
     return [
-        characterInputHandler,
+        characterInputHandler(substitutionRecords),
         textSubstitutionField(substitutionRecords),
     ];
 }

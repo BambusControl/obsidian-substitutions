@@ -1,9 +1,12 @@
 import {EditorView} from "@codemirror/view";
 import {createTransaction} from "./helpers/createTransaction";
+import {SubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
+import {Extension} from "@codemirror/state";
 
-export const characterInputHandler = EditorView.inputHandler.of(handler)
-
-function handler(view: EditorView, from: number, to: number, text: string) {
+export function characterInputHandler(
+    substitutionRecords: SubstitutionRecords
+): Extension {
+    return EditorView.inputHandler.of((view, from, to, text) => {
     const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
 
     if (!viewReadyForInput) {
@@ -20,8 +23,9 @@ function handler(view: EditorView, from: number, to: number, text: string) {
         return false;
     }
 
-    const transaction = createTransaction(view.state, text);
+    const transaction = createTransaction(view.state, text, substitutionRecords);
     view.dispatch(transaction);
 
     return true;
+});
 }
