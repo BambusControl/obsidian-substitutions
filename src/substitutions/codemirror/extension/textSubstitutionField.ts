@@ -1,9 +1,9 @@
 import {StateField} from "@codemirror/state";
-import {SubstitutionState} from "./type/substitutionState";
-import {defaultState} from "./constants/defaultState";
-import {substitutionEffect} from "./constants/substitutionEffect";
-import {SubstitutionRecords} from "../../libraries/types/savedata/substitutionRecords";
-import {sliceDoc} from "./helpers/text/sliceDoc";
+import {SubstitutionState} from "../../../libraries/types/substitutionState";
+import {defaultState} from "../constants/defaultState";
+import {substitutionEffect} from "../constants/substitutionEffect";
+import {SubstitutionRecords} from "../../../libraries/types/savedata/substitutionRecords";
+import {sliceDoc} from "../../../libraries/helpers/sliceDoc";
 
 export function textSubstitutionField(
     substitutionRecords: SubstitutionRecords

@@ -1,9 +1,9 @@
-import {EditorState, StateField, Transaction, TransactionSpec} from "@codemirror/state";
-import {recordText} from "./text/recordText";
-import {replaceText} from "./text/replaceText";
+import {EditorState, StateField, TransactionSpec} from "@codemirror/state";
+import {recordText} from "./recordText";
+import {replaceText} from "./replaceText";
 import {defaultState} from "../constants/defaultState";
-import {SubstitutionState} from "../type/substitutionState";
-import {sliceText} from "./text/sliceText";
+import {SubstitutionState} from "../../../libraries/types/substitutionState";
+import {sliceText} from "../../../libraries/helpers/sliceText";
 
 export function createTransaction(
     state: EditorState,

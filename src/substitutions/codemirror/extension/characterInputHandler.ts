@@ -1,10 +1,10 @@
 import {EditorView} from "@codemirror/view";
 import {Extension, StateField} from "@codemirror/state";
-import {SubstitutionState} from "./type/substitutionState";
-import {defaultState} from "./constants/defaultState";
-import {sliceText} from "./helpers/text/sliceText";
-import {recordText} from "./helpers/text/recordText";
-import {replaceText} from "./helpers/text/replaceText";
+import {SubstitutionState} from "../../../libraries/types/substitutionState";
+import {defaultState} from "../constants/defaultState";
+import {sliceText} from "../../../libraries/helpers/sliceText";
+import {recordText} from "../transaction/recordText";
+import {replaceText} from "../transaction/replaceText";
 
 export function characterInputHandler(
     substitutionField: StateField<SubstitutionState>

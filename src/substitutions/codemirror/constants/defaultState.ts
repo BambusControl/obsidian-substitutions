@@ -1,4 +1,4 @@
-import {SubstitutionState} from "../type/substitutionState";
+import {SubstitutionState} from "../../../libraries/types/substitutionState";
 
 export function defaultState(value?: Partial<SubstitutionState>): SubstitutionState {
     return {

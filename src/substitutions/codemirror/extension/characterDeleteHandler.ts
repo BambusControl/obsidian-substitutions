@@ -1,9 +1,9 @@
 import {Extension, StateField} from "@codemirror/state";
 import {EditorView} from "@codemirror/view";
-import {substitutionEffect} from "./constants/substitutionEffect";
-import {defaultState} from "./constants/defaultState";
-import {SubstitutionState} from "./type/substitutionState";
-import {replaceText} from "./helpers/text/replaceText";
+import {substitutionEffect} from "../constants/substitutionEffect";
+import {defaultState} from "../constants/defaultState";
+import {SubstitutionState} from "../../../libraries/types/substitutionState";
+import {replaceText} from "../transaction/replaceText";
 
 export function characterDeleteHandler(
     substitutionField: StateField<SubstitutionState>

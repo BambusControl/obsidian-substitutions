@@ -28,7 +28,11 @@ export class SettingTab extends PluginSettingTab {
         new Setting(headingContainer)
             .setHeading()
             .setName("Substitutions")
-            .setDesc("Here you can set and enable automatic text substitutions.")
+            .setDesc(
+                "Here you can set and enable automatic text substitutions. " +
+                "Changes currently require restart of Obsidian. " +
+                "Auto paired characters, like brackets, currently do not work."
+            )
         ;
 
         const newSubstitutionsContainer = this.containerEl.createDiv({cls: ["substitutions", "new"]});
@@ -55,7 +59,10 @@ export class SettingTab extends PluginSettingTab {
     }
 
     private get records(): SubstitutionRecordSetting[] {
-        return [...this.storedRecords, ...this.newRecords]
+        return [
+            ...this.newRecords,
+            ...this.storedRecords,
+        ];
     }
 
     private static newSubstitutionRecord(

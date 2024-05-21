@@ -1,6 +1,6 @@
 import {StateEffect} from "@codemirror/state";
 
-import {TextReplacement} from "../type/textReplacement";
+import {TextReplacement} from "../../../libraries/types/textReplacement";
 
 export const substitutionEffect = {
     /**

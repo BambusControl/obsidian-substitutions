@@ -7,6 +7,7 @@ import {SubstitutionsStore} from "../substitutionsStore";
 import {recordFilled} from "../../../libraries/helpers/recordFilled";
 import {toModifiable} from "../../../libraries/helpers/toModifiable";
 import {removeIdentifier} from "../../../libraries/helpers/removeIdentifier";
+import {recordNotDeleted} from "../../../libraries/helpers/recordNotDeleted";
 
 export class SubstitutionsStorage implements SubstitutionsStore {
 
@@ -30,6 +31,7 @@ export class SubstitutionsStorage implements SubstitutionsStore {
 
         const records = new Array(...modifiedRecords.values())
             .filter(recordFilled)
+            .filter(recordNotDeleted)
             .map(removeIdentifier)
         ;
 

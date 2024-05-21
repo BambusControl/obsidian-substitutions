@@ -1,5 +1,5 @@
 import {TextReplacement} from "./textReplacement";
-import {SubstitutionRecordMatches} from "../../../libraries/types/savedata/substitutionRecords";
+import {SubstitutionRecordMatches} from "./savedata/substitutionRecords";
 
 export type SubstitutionState = {
     cache: string,

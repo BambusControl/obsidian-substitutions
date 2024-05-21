@@ -1,4 +1,4 @@
-import {SubstitutionState} from "../../type/substitutionState";
+import {SubstitutionState} from "../types/substitutionState";
 
 export function sliceText(
     field: SubstitutionState,

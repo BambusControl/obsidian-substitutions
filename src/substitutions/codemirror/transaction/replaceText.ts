@@ -1,6 +1,5 @@
 import {EditorSelection, EditorState, TransactionSpec} from "@codemirror/state";
-import {substitutionEffect} from "../../constants/substitutionEffect";
-import * as repl from "node:repl";
+import {substitutionEffect} from "../constants/substitutionEffect";
 
 export function replaceText(state: EditorState, source: string, replacement: string): TransactionSpec {
     const changes = state.changeByRange((range) => {

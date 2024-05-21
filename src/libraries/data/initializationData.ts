@@ -9,9 +9,59 @@ export function initializationData(): SaveData {
             initialized: false,
             records: [
                 {
+                    from: "...",
+                    to: "…",
+                    enabled: true
+                },
+                {
+                    from: "<--",
+                    to: "←",
+                    enabled: true
+                },
+                {
+                    from: "<->",
+                    to: "↔",
+                    enabled: true
+                },
+                {
                     from: "-->",
                     to: "→",
-                    enabled: true,
+                    enabled: true
+                },
+                {
+                    from: "<==",
+                    to: "⇐",
+                    enabled: true
+                },
+                {
+                    from: "<=>",
+                    to: "⇔",
+                    enabled: true
+                },
+                {
+                    from: "==>",
+                    to: "⇒",
+                    enabled: true
+                },
+                {
+                    from: "!=",
+                    to: "≠",
+                    enabled: true
+                },
+                {
+                    from: "==",
+                    to: "≡",
+                    enabled: true
+                },
+                {
+                    from: "<=",
+                    to: "≤",
+                    enabled: true
+                },
+                {
+                    from: ">=",
+                    to: "≥",
+                    enabled: true
                 }
             ]
         }
