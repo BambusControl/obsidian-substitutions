@@ -1,5 +1,5 @@
 {
-    "$id": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0-NEXT/resources/save-data-schema.json",
+    "$id": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0/resources/save-data-schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "SubstitutionRecord": {
@@ -29,7 +29,7 @@
                 },
                 "records": {
                     "items": {
-                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0-NEXT/resources/save-data-schema.json#/definitions/SubstitutionRecord"
+                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0/resources/save-data-schema.json#/definitions/SubstitutionRecord"
                     },
                     "type": "array"
                 }
@@ -47,10 +47,10 @@
             "type": "boolean"
         },
         "substitutions": {
-            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0-NEXT/resources/save-data-schema.json#/definitions/SubstitutionsData"
+            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0/resources/save-data-schema.json#/definitions/SubstitutionsData"
         },
         "version": {
-            "const": "0.1.0-NEXT",
+            "const": "0.1.0",
             "description": "Version of the save data schema.\n\nMust comply with RegEx:\n```^[0-9]+\\\\.[0-9]+\\\\.[0-9]+(?:-[A-Z]+)?$```",
             "type": "string"
         }
