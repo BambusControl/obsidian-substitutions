@@ -1,0 +1,65 @@
+{
+    "$id": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0/resources/save-data-schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "SubstitutionRecord": {
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "enabled",
+                "from",
+                "to"
+            ],
+            "type": "object"
+        },
+        "SubstitutionsData": {
+            "properties": {
+                "initialized": {
+                    "description": "Whether the object has been initialized.",
+                    "type": "boolean"
+                },
+                "records": {
+                    "items": {
+                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0/resources/save-data-schema.json#/definitions/SubstitutionRecord"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "initialized",
+                "records"
+            ],
+            "type": "object"
+        }
+    },
+    "properties": {
+        "initialized": {
+            "description": "Whether the object has been initialized.",
+            "type": "boolean"
+        },
+        "substitutions": {
+            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.1.0/resources/save-data-schema.json#/definitions/SubstitutionsData"
+        },
+        "version": {
+            "const": "0.1.0",
+            "description": "Version of the save data schema.\n\nMust comply with RegEx:\n```^[0-9]+\\\\.[0-9]+\\\\.[0-9]+(?:-[A-Z]+)?$```",
+            "type": "string"
+        }
+    },
+    "required": [
+        "initialized",
+        "substitutions",
+        "version"
+    ],
+    "type": "object"
+}
+
