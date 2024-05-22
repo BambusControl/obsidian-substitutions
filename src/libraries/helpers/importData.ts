@@ -10,10 +10,10 @@ export async function importData(
     const dataLoaded = isTypeSaveData(localData);
 
     if (dataLoaded) {
-        console.log("Data skeleton already present");
+        DEVELOPMENT: console.log("Data skeleton already present");
         return localData;
     }
 
-    console.log("Creating data skeleton");
+    DEVELOPMENT: console.log("Creating data skeleton");
     return {...initializationData()};
 }
