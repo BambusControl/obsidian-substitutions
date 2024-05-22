@@ -15,7 +15,7 @@ export interface SaveData extends Initializable {
  */
 export type SaveDataVersion
     = "0.1.0"
-    | "0.1.0-NEXT"
+    | "0.1.1"
     ;
 
-export const CURRENT_VERSION: SaveDataVersion = "0.1.0-NEXT";
+export const CURRENT_VERSION: SaveDataVersion = "0.1.1";
