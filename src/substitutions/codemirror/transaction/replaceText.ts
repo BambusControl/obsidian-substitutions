@@ -23,6 +23,7 @@ export function replaceText(state: EditorState, source: string, replacement: str
                 substitutionEffect.substitute.of({
                     from: source,
                     to: replacement,
+                    endPosition: replacementCursor.to - 1,
                 }),
             ],
         }
