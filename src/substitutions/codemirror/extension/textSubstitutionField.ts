@@ -15,13 +15,16 @@ export function textSubstitutionField(
         .map(pm => pm.from.length);
     const maxLength = Math.max(...lengths);
 
+    const newDefaultState = (value?: Partial<SubstitutionState> | undefined) => defaultState({
+        length: maxLength,
+        matches: potentialMatches,
+        ...value
+    });
+
     return StateField.define({
 
         create() {
-            return defaultState({
-                length: maxLength,
-                matches: potentialMatches,
-            });
+            return newDefaultState();
         },
 
         update(current, transaction) {
@@ -34,25 +37,23 @@ export function textSubstitutionField(
                     output = {
                         ...output,
                         cache: sliceDoc(transaction.state, output.length),
-                        substitution: null,
                     };
 
                 } else if (effect.is(substitutionEffect.substitute)) {
 
-                    output = {
-                        ...output,
+                    /* After substitution, we reset everything, only remembering that we substituted something */
+                    output = newDefaultState({
                         substitution: {
                             from: effect.value.from,
                             to: effect.value.to,
-                        },
-                    };
+                            endPosition: effect.value.endPosition,
+                        }
+                    });
 
                 } else if (effect.is(substitutionEffect.revert)) {
 
-                    output = {
-                        ...output,
-                        substitution: null,
-                    };
+                    /* After reverting, there is nothing we should remember */
+                    output = newDefaultState();
 
                 }
             }

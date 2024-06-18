@@ -15,14 +15,23 @@ export function characterDeleteHandler(
             return;
         }
 
-        const field = view.state.field(substitutionField, false) ?? defaultState();
+        const state = view.state;
+        const selection = state.selection.main;
 
-        if (field.substitution == null) {
+        if (selection.from !== selection.to) {
             return;
         }
 
-        const revertText = replaceText(view.state, field.substitution.to, field.substitution.from);
-        const revertEffect = view.state.update({
+        const cursorPos = selection.to;
+        const field = state.field(substitutionField, false) ?? defaultState();
+        const lastSubPos = field.substitution?.endPosition;
+
+        if (field.substitution == null || cursorPos !== lastSubPos) {
+            return;
+        }
+
+        const revertText = replaceText(state, field.substitution.to, field.substitution.from);
+        const revertEffect = state.update({
             effects: [
                 substitutionEffect.revert.of(null),
             ]
