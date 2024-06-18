@@ -23,6 +23,7 @@ export class NewDataInitializer implements DataInitializer {
         if (!await this.dataStore.isCurrentVersion()) {
             DEVELOPMENT: console.log("Plugin and Data version mismatch, reinitializing")
             await this.dataStore.setInitialized(false);
+            await this.dataStore.setInitializedSubstitutions(false);
         }
 
         await this.initializeSubstitutions();
