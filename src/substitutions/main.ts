@@ -18,10 +18,10 @@ export default class SubstitutionsPlugin extends Plugin {
     }
 
     override async onload(): Promise<void> {
-        DEVELOPMENT: console.group("Loading Substitutions plugin");
-        DEVELOPMENT: console.time("Plugin load time");
+        console.group("Loading Substitutions plugin");
+        console.time("Plugin load time");
 
-        DEVELOPMENT: console.info("Creating services");
+        console.info("Creating services");
 
         const dataStore = new RootPluginDataStorage(this);
         const initializer = new NewDataInitializer(dataStore);
@@ -29,14 +29,14 @@ export default class SubstitutionsPlugin extends Plugin {
 
         await initializer.initializeData();
 
-        DEVELOPMENT: console.info("Adding editor extension");
+        console.info("Adding editor extension");
 
         const records = await substitutionStorage.getSubstitutionRecords();
         this.registerEditorExtension([
             substitution(records),
         ]);
 
-        DEVELOPMENT: console.info("Adding UI elements");
+        console.info("Adding UI elements");
 
         this.addSettingTab(new SettingTab(
             this.app,
@@ -44,7 +44,7 @@ export default class SubstitutionsPlugin extends Plugin {
             substitutionStorage,
         ))
 
-        DEVELOPMENT: console.timeEnd("Plugin load time");
-        DEVELOPMENT: console.groupEnd();
+        console.timeEnd("Plugin load time");
+        console.groupEnd();
     }
 }
