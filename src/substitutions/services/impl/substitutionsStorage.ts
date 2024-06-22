@@ -13,6 +13,7 @@ export class SubstitutionsStorage implements SubstitutionsStore {
 
     constructor(
         private readonly store: RootDataStore,
+        private readonly substitutionsModifiedCallback: (records: SubstitutionRecords) => void
     ) {
     }
 
@@ -26,18 +27,20 @@ export class SubstitutionsStorage implements SubstitutionsStore {
     }
 
     async overwriteSubstitutionRecords(modifiedRecords: ModifiableSubstitutionRecords): Promise<void> {
-        /* TODO [user input sanity check]: validity of substitutions */
-        const subs = await this.store.getSubstitutions();
+        const originalData = await this.store.getSubstitutions();
 
-        const records = new Array(...modifiedRecords.values())
-            .filter(recordFilled)
-            .filter(recordNotDeleted)
-            .map(removeIdentifier)
-        ;
-        const {records: updatedRecords} = await this.store.overwriteSubstitutions({
-            ...subs,
+        const filledRecords = new Array(...modifiedRecords.values())
+                .filter(recordFilled);
+
+        const records = filledRecords
+                    .filter(recordNotDeleted)
+                    .map(removeIdentifier);
+
+        const savedSubstitutions = await this.store.overwriteSubstitutions({
+            ...originalData,
             records: records,
         });
-    }
 
+        this.substitutionsModifiedCallback(savedSubstitutions.records)
+    }
 }

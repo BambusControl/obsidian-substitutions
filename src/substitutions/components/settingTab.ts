@@ -30,7 +30,6 @@ export class SettingTab extends PluginSettingTab {
             .setName("Substitutions")
             .setDesc(
                 "Here you can set and enable automatic text substitutions. " +
-                "Changes currently require restart of Obsidian. " +
                 "Auto paired characters, like brackets, currently do not work."
             )
         ;

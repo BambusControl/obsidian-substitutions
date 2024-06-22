@@ -36,11 +36,6 @@ export function initializationData(): SaveData {
                     enabled: true
                 },
                 {
-                    from: "<--",
-                    to: "←",
-                    enabled: true
-                },
-                {
                     from: "1/2",
                     to: "½",
                     enabled: true
