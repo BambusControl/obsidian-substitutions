@@ -4,11 +4,21 @@
 
 Automatically substitute text fragments with symbols or different text.
 
-> *This is a plugin for [Obsidian](https://obsidian.md); [substitutions](https://obsidian.md/plugins?id=substitutions)*.
+> *This is a plugin for [Obsidian: substitutions](https://obsidian.md/plugins?id=substitutions)*.
 
-![Substitution usage preview](./assets/preview.gif)
+<p><img
+    src="./assets/preview.gif"
+    alt="Substitution usage preview"
+    style="width: 26em;"
+></p>
 
 ## Usage
 
 You can configure your substitutions via the settings pane.
 Enable/disable them or remove them completely!
+
+<p align="center"><img
+    src="assets/settings_preview.gif"
+    alt="Substitution settings preview"
+    style="width: 56em;"
+></p>
