@@ -9,26 +9,26 @@ export class NewDataInitializer implements DataInitializer {
     }
 
     async initializeData(): Promise<void> {
-        DEVELOPMENT: console.group("Initializing local data");
+        console.group("Initializing local data");
         await this.initializeAll();
-        DEVELOPMENT: console.groupEnd();
+        console.groupEnd();
     }
 
     private async initializeAll() {
         if (await this.dataStore.isInitialized()) {
-            DEVELOPMENT: console.info("Plugin data already initialized");
+            console.info("Plugin data already initialized");
             return;
         }
 
         if (!await this.dataStore.isCurrentVersion()) {
-            DEVELOPMENT: console.log("Plugin and Data version mismatch, reinitializing")
+            console.log("Plugin and Data version mismatch, reinitializing")
             await this.dataStore.setInitialized(false);
             await this.dataStore.setInitializedSubstitutions(false);
         }
 
         await this.initializeSubstitutions();
 
-        DEVELOPMENT: console.info("Flagging local data as initialized");
+        console.info("Flagging local data as initialized");
         await this.dataStore.setInitialized(true);
     }
 
@@ -36,11 +36,11 @@ export class NewDataInitializer implements DataInitializer {
         const SubstitutionsInitialized = (await this.dataStore.getSubstitutions()).initialized;
 
         if (SubstitutionsInitialized) {
-            DEVELOPMENT: console.info("Substitutions data already initialized");
+            console.info("Substitutions data already initialized");
             return;
         }
 
-        DEVELOPMENT: console.info("Substitutions initialization");
+        console.info("Substitutions initialization");
 
         await this.dataStore.overwriteSubstitutions({
             ...initializationData().substitutions,
