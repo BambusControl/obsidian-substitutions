@@ -7,7 +7,7 @@ export class SettingTab extends PluginSettingTab {
 
     private rendered = false;
     private storedRecords: SubstitutionRecordSetting[] = [];
-    private newRecords: SubstitutionRecordSetting[] = [];
+    private readonly newRecords: SubstitutionRecordSetting[] = [];
 
     constructor(
         app: App,
@@ -41,9 +41,7 @@ export class SettingTab extends PluginSettingTab {
         this.storedRecords = (await this.dataStore.getModifiableSubstitutionRecords())
             .map(sr => new SubstitutionRecordSetting(sr, substitutionsContainer));
 
-        this.newRecords.push(
-            SettingTab.newSubstitutionRecord(newSubstitutionsContainer, this.newRecords)
-        )
+        SettingTab.registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords)
 
         for (const recordSetting of this.records) {
             recordSetting.display();
@@ -65,22 +63,22 @@ export class SettingTab extends PluginSettingTab {
         ];
     }
 
-    private static newSubstitutionRecord(
+    private static registerNewSubstitutionRecordSetting(
         container: HTMLDivElement,
-        recordSettings: SubstitutionRecordSetting[],
+        newSettings: SubstitutionRecordSetting[],
     ): SubstitutionRecordSetting {
-        return new SubstitutionRecordSetting(
+        const substitutionRecordSetting = new SubstitutionRecordSetting(
             newModifiableSubstitutionRecord(),
             container,
             () => {
-                const setting = SettingTab.newSubstitutionRecord(container, recordSettings)
+                /* Very peculiar, recursively defined, but the function wraps it, so it creates it on demand */
+                const setting = SettingTab.registerNewSubstitutionRecordSetting(container, newSettings);
                 setting.display();
-                recordSettings.unshift(
-                    /* Very peculiar, recursively defined, but the function wraps it, so it creates it on demand */
-                    SettingTab.newSubstitutionRecord(container, recordSettings)
-                )
             }
         );
+
+        newSettings.unshift(substitutionRecordSetting)
+        return substitutionRecordSetting;
     }
 }
 

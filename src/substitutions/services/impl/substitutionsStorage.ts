@@ -34,12 +34,10 @@ export class SubstitutionsStorage implements SubstitutionsStore {
             .filter(recordNotDeleted)
             .map(removeIdentifier)
         ;
-
-        await this.store.overwriteSubstitutions({
+        const {records: updatedRecords} = await this.store.overwriteSubstitutions({
             ...subs,
             records: records,
         });
     }
 
 }
-
