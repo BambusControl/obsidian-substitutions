@@ -6,6 +6,7 @@ import {NewDataInitializer} from "./services/impl/newDataInitializer";
 import {SubstitutionsStorage} from "./services/impl/substitutionsStorage";
 import {Extension} from "@codemirror/state";
 import {ExtensionHandler} from "./extensionHandler";
+import { AddSubstitutionModal } from "./components/addSubstitutionModal";
 
 /* Used by Obsidian */
 // noinspection JSUnusedGlobalSymbols
@@ -52,6 +53,17 @@ export default class SubstitutionsPlugin extends Plugin {
             this,
             substitutionStorage,
         ))
+
+        this.addCommand({
+            id: "add-substitution",
+            name: "Add Substitution",
+            callback: () => {
+                new AddSubstitutionModal(
+                    this.app,
+                    substitutionStorage,
+                ).open();
+            }
+        });
 
         console.timeEnd("Plugin load time");
         console.groupEnd();
