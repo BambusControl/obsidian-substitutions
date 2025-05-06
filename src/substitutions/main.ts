@@ -57,12 +57,13 @@ export default class SubstitutionsPlugin extends Plugin {
         this.addCommand({
             id: "add-substitution",
             name: "Add Substitution",
-            callback: () => {
+            editorCallback: (editor, ctx) => {
                 new AddSubstitutionModal(
                     this.app,
                     substitutionStorage,
+                    editor.getSelection()
                 ).open();
-            }
+            },
         });
 
         console.timeEnd("Plugin load time");

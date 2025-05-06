@@ -1,13 +1,13 @@
-import {ModifiableSubstitutionRecord} from "../../types/savedata/modifiableSubstitutionRecord";
-import {MaybePromise} from "../../types/maybePromise";
 import {Setting} from "obsidian";
+import {ModifiableSubstitutionRecord} from "../../types/savedata/modifiableSubstitutionRecord";
 import {recordFilled} from "../recordFilled";
 import {toggleSubstitution} from "./toggleSubstitution";
 import {substituteFrom} from "./substituteFrom";
-import {removeSubstitution} from "./removeSubstitution";
 import {substituteWith} from "./substituteWith";
+import {removeSubstitution} from "./removeSubstitution";
+import {MaybePromise} from "../../types/maybePromise";
 
-export function createNewSubstitutionInputs(
+export function createNewSettingInputs(
     container: HTMLElement,
     record: ModifiableSubstitutionRecord,
     fillCallback: () => MaybePromise<void>,
@@ -20,7 +20,8 @@ export function createNewSubstitutionInputs(
     }
 
     return setting
-        .addToggle(toggleSubstitution(record))
+        .setDesc("Specify the new substitution")
         .addText(substituteFrom(record, setting, fillCallback))
-        .addText(substituteWith(record, setting, fillCallback));
+        .addText(substituteWith(record, setting, fillCallback))
+        ;
 }
