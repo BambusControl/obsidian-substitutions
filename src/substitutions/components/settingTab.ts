@@ -1,7 +1,7 @@
 import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
 import {SubstitutionsStore} from "../services/substitutionsStore";
 import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
-import {newModifiableSubstitutionRecord} from "../../libraries/helpers/newModifiableSubstitutionRecord";
+import {registerNewSubstitutionRecordSetting} from "./registerNewSubstitutionRecordSetting";
 
 export class SettingTab extends PluginSettingTab {
 
@@ -15,7 +15,7 @@ export class SettingTab extends PluginSettingTab {
         private readonly dataStore: SubstitutionsStore,
     ) {
         super(app, plugin);
-        this.containerEl.addClass("plugin", "substitutions", "setting-tab")
+        this.containerEl.addClass("plugin", "substitutions", "settings-tab")
     }
 
     override async display(): Promise<void> {
@@ -34,13 +34,13 @@ export class SettingTab extends PluginSettingTab {
             )
         ;
 
-        const newSubstitutionsContainer = this.containerEl.createDiv({cls: ["substitutions", "new"]});
-        const substitutionsContainer = this.containerEl.createDiv({cls: "substitutions"});
+        const newSubstitutionsContainer = this.containerEl.createDiv({cls: ["substitutions-list", "new"]});
+        const substitutionsContainer = this.containerEl.createDiv({cls: "substitutions-list"});
 
         this.storedRecords = (await this.dataStore.getModifiableSubstitutionRecords())
             .map(sr => new SubstitutionRecordSetting(sr, substitutionsContainer));
 
-        SettingTab.registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords)
+        registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords)
 
         for (const recordSetting of this.records) {
             recordSetting.display();
@@ -61,23 +61,4 @@ export class SettingTab extends PluginSettingTab {
             ...this.storedRecords,
         ];
     }
-
-    private static registerNewSubstitutionRecordSetting(
-        container: HTMLDivElement,
-        newSettings: SubstitutionRecordSetting[],
-    ): SubstitutionRecordSetting {
-        const substitutionRecordSetting = new SubstitutionRecordSetting(
-            newModifiableSubstitutionRecord(),
-            container,
-            () => {
-                /* Very peculiar, recursively defined, but the function wraps it, so it creates it on demand */
-                const setting = SettingTab.registerNewSubstitutionRecordSetting(container, newSettings);
-                setting.display();
-            }
-        );
-
-        newSettings.unshift(substitutionRecordSetting)
-        return substitutionRecordSetting;
-    }
 }
-

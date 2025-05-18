@@ -1,48 +1,53 @@
 .plugin.substitutions {
 
-    &.setting-tab {
+    &.add-substitution-modal {
+        .substitution-record {
+            //border: none;
+            //padding: .25em
+        }
+    }
 
-        .substitutions.new {
+    .substitutions-list {
+        &.new {
             display: flex;
             flex-direction: column-reverse;
         }
 
-        .substitutions > * {
-            border: none;
-            padding: .25em
-        }
-
         .substitution-record {
+            border: none;
+            padding: .25em;
 
             &:not(.filled-substitution) {
-
                 .setting-item-control {
-                    &>:first-child, &>:last-child {
+                    & > :first-child, & > :last-child {
                         visibility: hidden;
                     }
                 }
 
             }
-
-            .setting-item-info {
-                display: none;
-                flex-grow: 0;
-                margin: 0;
-            }
-
-            .setting-item-control {
-                flex-grow: 1;
-                text-align: left;
-
-                display: flex;
-                justify-content: space-evenly;
-                align-content: center;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                align-items: center;
-            }
-
         }
+    }
+
+    .substitution-record {
+
+        .setting-item-info {
+            display: none;
+            flex-grow: 0;
+            margin: 0;
+        }
+
+        .setting-item-control {
+            flex-grow: 1;
+            text-align: left;
+
+            display: flex;
+            justify-content: space-evenly;
+            align-content: center;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
     }
 
 }

@@ -1,11 +1,11 @@
-import {App, Modal, Plugin, PluginSettingTab, Setting} from "obsidian";
+import {App, ButtonComponent, Modal, Setting} from "obsidian";
 import {SubstitutionsStore} from "../services/substitutionsStore";
 import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
-import {newModifiableSubstitutionRecord} from "../../libraries/helpers/newModifiableSubstitutionRecord";
-import {createNewSettingInputs} from "../../libraries/helpers/settings/createNewSettingInputs";
-import {AddSubstitutionRecordSetting} from "./addSubstitutionRecordSetting";
+import {registerNewSubstitutionRecordSetting} from "./registerNewSubstitutionRecordSetting";
 
 export class AddSubstitutionModal extends Modal {
+    private saveButton?: ButtonComponent;
+    private storedRecords: SubstitutionRecordSetting[] = [];
     private readonly newRecords: SubstitutionRecordSetting[] = [];
 
     constructor(
@@ -14,30 +14,41 @@ export class AddSubstitutionModal extends Modal {
         private readonly placeholderValue: string,
     ) {
         super(app);
-        this.display();
     }
 
-    display(): void {
+    override async onOpen(): Promise<void> {
         const fragment = new DocumentFragment();
-        const container = fragment.createDiv();
 
-        const substitutionRecordSetting = new AddSubstitutionRecordSetting(
-            {
-                ...newModifiableSubstitutionRecord(),
-                to: this.placeholderValue,
-            },
-            container,
-            () => {
-                // try to assert that same substitution does not exist
-            }
+        const container = fragment.createDiv();
+        container.addClass("plugin", "substitutions", "add-substitution-modal");
+
+        const headingContainer = container.createDiv({cls: "heading"});
+        new Setting(headingContainer)
+            .setDesc(
+                "Auto paired characters, like brackets, currently do not work."
+            )
+        ;
+
+        const newSubstitutionsContainer = container.createDiv({cls: ["substitutions-list", "new"]});
+        const s = registerNewSubstitutionRecordSetting(
+            newSubstitutionsContainer,
+            this.newRecords,
+            { from: this.placeholderValue }
         );
-        // TODO save
-        substitutionRecordSetting.display();
+
+        for (const recordSetting of this.newRecords) {
+            recordSetting.display();
+        }
 
         this.setTitle("Add new substitution");
         this.setContent(fragment);
+
+        s.firstInput?.focus();
     }
 
-    override onClose(): void {
+    override async onClose(): Promise<void> {
+        await this.dataStore.addSubstitutionRecords(
+            this.newRecords.map(sr => sr.record)
+        );
     }
 }

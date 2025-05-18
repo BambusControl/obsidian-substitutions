@@ -43,4 +43,26 @@ export class SubstitutionsStorage implements SubstitutionsStore {
 
         this.substitutionsModifiedCallback(savedSubstitutions.records)
     }
+
+    async addSubstitutionRecords(records: ModifiableSubstitutionRecords): Promise<void> {
+        const originalData = await this.store.getSubstitutions();
+        const originalRecords = originalData.records;
+
+        const filledRecords = new Array(...records.values())
+                .filter(recordFilled);
+
+        const newRecords = filledRecords
+                    .filter(recordNotDeleted)
+                    .map(removeIdentifier);
+
+        const savedSubstitutions = await this.store.overwriteSubstitutions({
+            ...originalData,
+            records: [
+                ...newRecords,
+                ...originalRecords,
+            ],
+        });
+
+        this.substitutionsModifiedCallback(savedSubstitutions.records)
+    }
 }

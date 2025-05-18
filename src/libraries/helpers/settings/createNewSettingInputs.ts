@@ -1,16 +1,13 @@
 import {Setting} from "obsidian";
 import {ModifiableSubstitutionRecord} from "../../types/savedata/modifiableSubstitutionRecord";
 import {recordFilled} from "../recordFilled";
-import {toggleSubstitution} from "./toggleSubstitution";
-import {substituteFrom} from "./substituteFrom";
-import {substituteWith} from "./substituteWith";
-import {removeSubstitution} from "./removeSubstitution";
 import {MaybePromise} from "../../types/maybePromise";
+import {toggleSubstitution} from "./toggleSubstitution";
 
 export function createNewSettingInputs(
     container: HTMLElement,
     record: ModifiableSubstitutionRecord,
-    fillCallback: () => MaybePromise<void>,
+    fillCallback: (record: ModifiableSubstitutionRecord) => MaybePromise<void>,
 ): Setting {
     const setting = new Setting(container)
         .setClass("substitution-record");
@@ -20,8 +17,26 @@ export function createNewSettingInputs(
     }
 
     return setting
-        .setDesc("Specify the new substitution")
-        .addText(substituteFrom(record, setting, fillCallback))
-        .addText(substituteWith(record, setting, fillCallback))
+        .addToggle(toggleSubstitution(record))
+        .addText((textInput) => textInput
+            .setPlaceholder("Replace")
+            .onChange(async (input) => {
+                record.from = input;
+                if (record.from != "") {
+                    await fillCallback(record);
+                }
+            })
+            .setValue(record.from)
+        )
+        .addText((textInput) => textInput
+            .setPlaceholder("Replace")
+            .onChange(async (input) => {
+                record.to = input;
+                if (record.to != "") {
+                    await fillCallback(record);
+                }
+            })
+            .setValue(record.to)
+        )
         ;
 }

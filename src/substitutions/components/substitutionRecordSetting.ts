@@ -1,10 +1,14 @@
-import {createSettingInputs} from "../../libraries/helpers/settings/createSettingInputs";
 import {ModifiableSubstitutionRecord} from "../../libraries/types/savedata/modifiableSubstitutionRecord";
 import {Setting} from "obsidian";
 import {MaybePromise} from "../../libraries/types/maybePromise";
+import {recordFilled} from "../../libraries/helpers/recordFilled";
+import {toggleSubstitution} from "../../libraries/helpers/settings/toggleSubstitution";
+import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
+import {removeSubstitution} from "../../libraries/helpers/settings/removeSubstitution";
 
 export class SubstitutionRecordSetting {
-    private _setting: Setting | null = null;
+    private setting: Setting | null = null;
+    public firstInput?: HTMLInputElement;
 
     constructor(
         private readonly _record: ModifiableSubstitutionRecord,
@@ -18,17 +22,44 @@ export class SubstitutionRecordSetting {
     }
 
     display(): Setting {
-        if (this._setting != null) {
-            return this._setting;
+        if (this.setting != null) {
+            return this.setting;
         }
 
-        this._setting = createSettingInputs(
-            this._container,
-            this.record,
-            this._onFill,
-        );
+        const setting = new Setting(this._container)
+            .setClass("substitution-record");
 
-        return this._setting;
+        if (recordFilled(this._record)) {
+            setting.setClass("filled-substitution");
+        }
+
+        setting
+            .addToggle(toggleSubstitution(this._record))
+            .addText((textInput) => {
+                    textInput
+                        .setPlaceholder("Replace")
+                        .onChange((input) => {
+                            this._record.from = input;
+                        })
+                        .setValue(this._record.from);
+                    this.firstInput = textInput.inputEl;
+                }
+            )
+            .addText((textInput) => textInput
+                .setPlaceholder("With")
+                .onChange(async (input) => {
+                    this._record.to = input;
+                    if (checkJustFilled(setting, this._record.to)) {
+                        setting.setClass("filled-substitution");
+                        await this._onFill();
+                    }
+                })
+                .setValue(this._record.to)
+            )
+            .addExtraButton(removeSubstitution(this._record, setting));
+
+        this.setting = setting;
+        return setting;
     }
 
 }
