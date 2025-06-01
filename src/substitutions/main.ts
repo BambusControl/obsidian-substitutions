@@ -57,7 +57,7 @@ export default class SubstitutionsPlugin extends Plugin {
         this.addCommand({
             id: "add-substitution",
             name: "Add Substitution",
-            editorCallback: (editor, ctx) => {
+            editorCallback: (editor, _) => {
                 new AddSubstitutionModal(
                     this.app,
                     substitutionStorage,

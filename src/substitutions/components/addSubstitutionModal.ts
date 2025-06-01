@@ -1,11 +1,9 @@
-import {App, ButtonComponent, Modal, Setting} from "obsidian";
+import {App, Modal, Setting} from "obsidian";
 import {SubstitutionsStore} from "../services/substitutionsStore";
 import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
 import {registerNewSubstitutionRecordSetting} from "./registerNewSubstitutionRecordSetting";
 
 export class AddSubstitutionModal extends Modal {
-    private saveButton?: ButtonComponent;
-    private storedRecords: SubstitutionRecordSetting[] = [];
     private readonly newRecords: SubstitutionRecordSetting[] = [];
 
     constructor(

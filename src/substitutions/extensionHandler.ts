@@ -5,10 +5,6 @@ import {substitution} from "./codemirror/substitution";
 
 export class ExtensionHandler {
 
-
-    /**
-     * @param extensions in place modification
-     */
     static replaceAndUpdate(
         extensions: Extension[],
         records: SubstitutionRecords,
@@ -21,21 +17,22 @@ export class ExtensionHandler {
         workspace.updateOptions();
     }
 
-    /**
-     * @param extensions in place modification
-     */
-    static replaceAndRegister(extensions: Extension[], records: SubstitutionRecords, plugin: Plugin) {
+    static replaceAndRegister(
+        extensions: Extension[],
+        records: SubstitutionRecords,
+        plugin: Plugin
+    ) {
         ExtensionHandler.replaceExtensions(extensions, records);
 
-        console.log("Reloading CodeMirror extensions")
+        console.log("Registering CodeMirror extensions")
 
         plugin.registerEditorExtension(extensions);
     }
 
-    /**
-     * @param extensions in place modification
-     */
-    private static replaceExtensions(extensions: Extension[], records: SubstitutionRecords) {
+    private static replaceExtensions(
+        extensions: Extension[],
+        records: SubstitutionRecords
+    ) {
         while (extensions.length > 0) {
             extensions.pop();
         }

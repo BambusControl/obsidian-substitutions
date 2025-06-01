@@ -2,7 +2,6 @@ import {EditorView} from "@codemirror/view";
 import {Extension, StateField} from "@codemirror/state";
 import {SubstitutionState} from "../../../libraries/types/substitutionState";
 import {defaultState} from "../constants/defaultState";
-import {sliceText} from "../../../libraries/helpers/sliceText";
 import {recordText} from "../transaction/recordText";
 import {replaceText} from "../transaction/replaceText";
 
@@ -27,17 +26,16 @@ export function characterInputHandler(
         }
 
         const field = view.state.field(substitutionField, false) ?? defaultState();
-        const targetString = sliceText(field, text);
+        const targetString = (field.cache + text).slice(-field.length);
 
         const match = field.matches
             .find(m => targetString.endsWith(m.from));
 
-        const transactions = match == null ? [
-            insert(),
-            recordText(view.state, text),
-        ] : [
-            replaceText(view.state, match.from, match.to),
-        ];
+        const transactions = match != null
+            /* Record and replace text on text match */
+            ? [recordText(view.state), replaceText(view.state, match.from, match.to)]
+            /* Insert and record text on no match */
+            : [insert(), recordText(view.state)];
 
         view.dispatch(...transactions);
 

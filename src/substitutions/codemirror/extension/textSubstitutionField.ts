@@ -41,19 +41,21 @@ export function textSubstitutionField(
 
                 } else if (effect.is(substitutionEffect.substitute)) {
 
-                    /* After substitution, we reset everything, only remembering that we substituted something */
-                    output = newDefaultState({
+                    output = {
+                        ...output,
                         substitution: {
                             from: effect.value.from,
                             to: effect.value.to,
                             endPosition: effect.value.endPosition,
                         }
-                    });
+                    };
 
                 } else if (effect.is(substitutionEffect.revert)) {
 
-                    /* After reverting, there is nothing we should remember */
-                    output = newDefaultState();
+                    output = {
+                        ...output,
+                        substitution: null,
+                    };
 
                 }
             }

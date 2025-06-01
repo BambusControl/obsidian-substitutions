@@ -156,13 +156,13 @@ export function initializationData(): SaveData {
                     enabled: true
                 },
                 {
-                    /* Conflicts with markdown horizontal rule syntax */
+                    /* Conflicts with Markdown horizontal rule syntax */
                     from: "--",
                     to: "–",
                     enabled: false
                 },
                 {
-                    /* Conflicts with markdown horizontal rule syntax */
+                    /* Conflicts with Markdown horizontal rule syntax */
                     from: "---",
                     to: "—",
                     enabled: false

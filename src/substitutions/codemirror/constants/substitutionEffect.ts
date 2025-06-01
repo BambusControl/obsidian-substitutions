@@ -6,10 +6,10 @@ export const substitutionEffect = {
     /**
      * Update the target string to check for substitution
      */
-    update: StateEffect.define<string>(),
+    update: StateEffect.define(),
 
     /**
-     * Replace target string with a substitute
+     * Replace the target string with a substitute
      */
     substitute: StateEffect.define<TextReplacement>(),
 
