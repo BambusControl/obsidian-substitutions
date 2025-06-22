@@ -1,7 +1,7 @@
 {
 	"id": "substitutions",
 	"name": "Substitutions",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"minAppVersion": "1.5.12",
 	"description": "Automatically replace text fragments with symbols or different text",
 	"author": "BambusControl",

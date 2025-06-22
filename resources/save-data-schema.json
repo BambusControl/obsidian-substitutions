@@ -1,5 +1,5 @@
 {
-    "$id": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.4.0/resources/save-data-schema.json",
+    "$id": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.4.1/resources/save-data-schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "SubstitutionRecord": {
@@ -29,7 +29,7 @@
                 },
                 "records": {
                     "items": {
-                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.4.0/resources/save-data-schema.json#/definitions/SubstitutionRecord"
+                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.4.1/resources/save-data-schema.json#/definitions/SubstitutionRecord"
                     },
                     "type": "array"
                 }
@@ -47,7 +47,7 @@
             "type": "boolean"
         },
         "substitutions": {
-            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.4.0/resources/save-data-schema.json#/definitions/SubstitutionsData"
+            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.4.1/resources/save-data-schema.json#/definitions/SubstitutionsData"
         },
         "version": {
             "const": "0.1.0",

@@ -54,6 +54,7 @@ export class SubstitutionRecordSetting {
                 textInput
                     .setPlaceholder("replace this")
                     .onChange((input) => {
+                        console.info("Changing from", input);
                         /* Don't unescape the input, it is always sanitized */
                         substitution.from = input;
                     })
@@ -65,29 +66,33 @@ export class SubstitutionRecordSetting {
                     .setIcon("arrow-left-right")
                     .setTooltip("Swap from and to")
                     .onClick(() => {
-                        const temp = substitution.from;
-                        substitution.from = substitution.to;
-                        substitution.to = temp;
-                        setting.setClass("filled-substitution");
-                        this.fromInput?.setValue(substitution.from);
-                        this.toInput?.setValue(substitution.to);
+                        const new_from = "" + substitution.to;
+                        const new_to = "" + substitution.from;
+
+                        substitution.from = new_from;
+                        substitution.to = new_to;
+
+                        this.fromInput?.setValue(new_from);
+                        this.toInput?.setValue(new_to);
                     });
 
                 button.extraSettingsEl.addClass("hide-if-empty");
             })
-            .addText((textInput) => textInput
-                .setPlaceholder("with this")
-                .onChange(async (input) => {
-                    substitution.to = unescapeSequences(input);
-                    if (checkJustFilled(setting, substitution.to)) {
-                        setting.setClass("filled-substitution");
-                        await this._onFill();
-                    }
+            .addText((textInput) => {
+                textInput
+                    .setPlaceholder("with this")
+                    .onChange(async (input) => {
+                        console.info("Changing to", input);
+                        substitution.to = unescapeSequences(input);
+                        if (checkJustFilled(setting, substitution.to)) {
+                            setting.setClass("filled-substitution");
+                            await this._onFill();
+                        }
 
-                    this.toInput = textInput;
-                })
-                .setValue(escapeSequences(substitution.to))
-            )
+                    })
+                    .setValue(escapeSequences(substitution.to));
+                this.toInput = textInput;
+            })
             .addExtraButton((button) => {
                 button
                     .setIcon("x")
