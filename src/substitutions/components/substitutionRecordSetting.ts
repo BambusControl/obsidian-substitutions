@@ -5,6 +5,8 @@ import {recordFilled} from "../../libraries/helpers/recordFilled";
 import {toggleSubstitution} from "../../libraries/helpers/settings/toggleSubstitution";
 import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
 import {removeSubstitution} from "../../libraries/helpers/settings/removeSubstitution";
+import {unescapeSequences} from "../../libraries/helpers/sequences/unescapeSequences";
+import {escapeSequences} from "../../libraries/helpers/sequences/escapeSequences";
 
 export class SubstitutionRecordSetting {
     private setting: Setting | null = null;
@@ -39,6 +41,7 @@ export class SubstitutionRecordSetting {
                     textInput
                         .setPlaceholder("Replace")
                         .onChange((input) => {
+                            /* Don't unescape the input, it is always sanitized */
                             this._record.from = input;
                         })
                         .setValue(this._record.from);
@@ -48,13 +51,13 @@ export class SubstitutionRecordSetting {
             .addText((textInput) => textInput
                 .setPlaceholder("With")
                 .onChange(async (input) => {
-                    this._record.to = input;
+                    this._record.to = unescapeSequences(input);
                     if (checkJustFilled(setting, this._record.to)) {
                         setting.setClass("filled-substitution");
                         await this._onFill();
                     }
                 })
-                .setValue(this._record.to)
+                .setValue(escapeSequences(this._record.to))
             )
             .addExtraButton(removeSubstitution(this._record, setting));
 

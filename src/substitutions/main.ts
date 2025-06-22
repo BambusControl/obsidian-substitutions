@@ -52,7 +52,7 @@ export default class SubstitutionsPlugin extends Plugin {
             this.app,
             this,
             substitutionStorage,
-        ))
+        ));
 
         this.addCommand({
             id: "add-substitution",
