@@ -2,6 +2,8 @@ name: Sonar Analysis
 
 on:
   push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
 
@@ -29,7 +31,7 @@ jobs:
           npx jest --coverage
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@master
         env:
           # Needed to get PR information, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
