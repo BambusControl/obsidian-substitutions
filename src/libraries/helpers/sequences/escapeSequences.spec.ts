@@ -1,6 +1,5 @@
 import {escapeSequences} from "./escapeSequences";
 import {initializationData} from "../../data/initializationData";
-import {unescapeSequences} from "./unescapeSequences";
 
 describe("escapeSequences", () => {
 
