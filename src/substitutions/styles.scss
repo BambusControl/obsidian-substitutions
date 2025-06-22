@@ -8,15 +8,10 @@
 
         .substitution-record {
             border: none;
-            padding: .25em;
+            padding: .33em 0;
 
-            &:not(.filled-substitution) {
-                .setting-item-control {
-                    & > :first-child, & > :last-child {
-                        visibility: hidden;
-                    }
-                }
-
+            &:not(.filled-substitution) .setting-item-control > .hide-if-empty {
+                visibility: hidden;
             }
         }
     }
@@ -34,7 +29,7 @@
             text-align: left;
 
             display: flex;
-            justify-content: space-evenly;
+            justify-content: center;
             align-content: center;
             flex-direction: row;
             flex-wrap: nowrap;

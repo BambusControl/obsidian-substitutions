@@ -30,18 +30,18 @@ export class SubstitutionsStorage implements SubstitutionsStore {
         const originalData = await this.store.getSubstitutions();
 
         const filledRecords = new Array(...modifiedRecords.values())
-                .filter(recordFilled);
+            .filter(recordFilled);
 
         const records = filledRecords
-                    .filter(recordNotDeleted)
-                    .map(removeIdentifier);
+            .filter(recordNotDeleted)
+            .map(removeIdentifier);
 
         const savedSubstitutions = await this.store.overwriteSubstitutions({
             ...originalData,
             records: records,
         });
 
-        this.substitutionsModifiedCallback(savedSubstitutions.records)
+        this.substitutionsModifiedCallback(savedSubstitutions.records);
     }
 
     async addSubstitutionRecords(records: ModifiableSubstitutionRecords): Promise<void> {
@@ -49,11 +49,11 @@ export class SubstitutionsStorage implements SubstitutionsStore {
         const originalRecords = originalData.records;
 
         const filledRecords = new Array(...records.values())
-                .filter(recordFilled);
+            .filter(recordFilled);
 
         const newRecords = filledRecords
-                    .filter(recordNotDeleted)
-                    .map(removeIdentifier);
+            .filter(recordNotDeleted)
+            .map(removeIdentifier);
 
         const savedSubstitutions = await this.store.overwriteSubstitutions({
             ...originalData,
@@ -63,6 +63,6 @@ export class SubstitutionsStorage implements SubstitutionsStore {
             ],
         });
 
-        this.substitutionsModifiedCallback(savedSubstitutions.records)
+        this.substitutionsModifiedCallback(savedSubstitutions.records);
     }
 }

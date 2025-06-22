@@ -1,21 +1,23 @@
 import {ModifiableSubstitutionRecord} from "../../libraries/types/savedata/modifiableSubstitutionRecord";
-import {Setting} from "obsidian";
+import {Setting, TextComponent} from "obsidian";
 import {MaybePromise} from "../../libraries/types/maybePromise";
 import {recordFilled} from "../../libraries/helpers/recordFilled";
-import {toggleSubstitution} from "../../libraries/helpers/settings/toggleSubstitution";
 import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
-import {removeSubstitution} from "../../libraries/helpers/settings/removeSubstitution";
 import {unescapeSequences} from "../../libraries/helpers/sequences/unescapeSequences";
 import {escapeSequences} from "../../libraries/helpers/sequences/escapeSequences";
+import {Action} from "../../libraries/types/savedata/action";
+import {getToggleTooltip} from "../../libraries/helpers/getToggleTooltip";
 
 export class SubstitutionRecordSetting {
     private setting: Setting | null = null;
-    public firstInput?: HTMLInputElement;
+    public fromInput?: TextComponent;
+    public toInput?: TextComponent;
 
     constructor(
         private readonly _record: ModifiableSubstitutionRecord,
         private readonly _container: HTMLElement,
-        private readonly _onFill: () => MaybePromise<void> = () => {},
+        private readonly _onFill: () => MaybePromise<void> = () => {
+        },
     ) {
     }
 
@@ -28,38 +30,75 @@ export class SubstitutionRecordSetting {
             return this.setting;
         }
 
+        const substitution = this._record;
         const setting = new Setting(this._container)
             .setClass("substitution-record");
 
-        if (recordFilled(this._record)) {
+        if (recordFilled(substitution)) {
             setting.setClass("filled-substitution");
         }
 
         setting
-            .addToggle(toggleSubstitution(this._record))
+            .addToggle((toggleInput) => {
+                toggleInput
+                    .setTooltip(getToggleTooltip(toggleInput.getValue()))
+                    .setValue(substitution.enabled)
+                    .onChange((value) => {
+                        substitution.enabled = value;
+                        toggleInput.setTooltip(getToggleTooltip(value));
+                    });
+
+                toggleInput.toggleEl.addClass("hide-if-empty");
+            })
             .addText((textInput) => {
-                    textInput
-                        .setPlaceholder("Replace")
-                        .onChange((input) => {
-                            /* Don't unescape the input, it is always sanitized */
-                            this._record.from = input;
-                        })
-                        .setValue(this._record.from);
-                    this.firstInput = textInput.inputEl;
-                }
-            )
+                textInput
+                    .setPlaceholder("replace this")
+                    .onChange((input) => {
+                        /* Don't unescape the input, it is always sanitized */
+                        substitution.from = input;
+                    })
+                    .setValue(substitution.from);
+                this.fromInput = textInput;
+            })
+            .addExtraButton((button) => {
+                button
+                    .setIcon("arrow-left-right")
+                    .setTooltip("Swap from and to")
+                    .onClick(() => {
+                        const temp = substitution.from;
+                        substitution.from = substitution.to;
+                        substitution.to = temp;
+                        setting.setClass("filled-substitution");
+                        this.fromInput?.setValue(substitution.from);
+                        this.toInput?.setValue(substitution.to);
+                    });
+
+                button.extraSettingsEl.addClass("hide-if-empty");
+            })
             .addText((textInput) => textInput
-                .setPlaceholder("With")
+                .setPlaceholder("with this")
                 .onChange(async (input) => {
-                    this._record.to = unescapeSequences(input);
-                    if (checkJustFilled(setting, this._record.to)) {
+                    substitution.to = unescapeSequences(input);
+                    if (checkJustFilled(setting, substitution.to)) {
                         setting.setClass("filled-substitution");
                         await this._onFill();
                     }
+
+                    this.toInput = textInput;
                 })
-                .setValue(escapeSequences(this._record.to))
+                .setValue(escapeSequences(substitution.to))
             )
-            .addExtraButton(removeSubstitution(this._record, setting));
+            .addExtraButton((button) => {
+                button
+                    .setIcon("x")
+                    .setTooltip("Remove substitution")
+                    .onClick(() => {
+                        substitution.action = Action.Delete;
+                        setting.settingEl.hide();
+                    });
+
+                button.extraSettingsEl.addClass("hide-if-empty");
+            });
 
         this.setting = setting;
         return setting;

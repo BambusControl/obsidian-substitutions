@@ -28,7 +28,7 @@ export class AddSubstitutionModal extends Modal {
         ;
 
         const newSubstitutionsContainer = container.createDiv({cls: ["substitutions-list", "new"]});
-        const s = registerNewSubstitutionRecordSetting(
+        const setting = registerNewSubstitutionRecordSetting(
             newSubstitutionsContainer,
             this.newRecords,
             { from: this.placeholderValue }
@@ -41,7 +41,7 @@ export class AddSubstitutionModal extends Modal {
         this.setTitle("Add new substitution");
         this.setContent(fragment);
 
-        s.firstInput?.focus();
+        setting.fromInput?.focus();
     }
 
     override async onClose(): Promise<void> {
