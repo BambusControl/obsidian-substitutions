@@ -16,9 +16,18 @@ Automatically substitute text fragments with symbols or different text.
 
 You can configure your substitutions via the settings pane.
 Enable/disable them or remove them completely!
+Add new substitutions while editing without going to settings via a command and use them immediately!
 
 <p align="center"><img
     src="assets/settings_preview.gif"
     alt="Substitution settings preview"
     style="width: 56em;"
 ></p>
+
+As you type, text fragments are automatically replaced with your configured substitutions. For example, typing `->` can be automatically transformed into `→`.
+
+Use special characters in your substitutions:
+- `\n` for newline
+- `\t` for tab
+- `\b` for backspace
+- `\\` for backslash

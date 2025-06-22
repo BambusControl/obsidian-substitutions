@@ -41,7 +41,7 @@ export class AddSubstitutionModal extends Modal {
         this.setTitle("Add new substitution");
         this.setContent(fragment);
 
-        setting.fromInput?.focus();
+        setting.fromInput?.inputEl.focus();
     }
 
     override async onClose(): Promise<void> {
