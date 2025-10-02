@@ -9,9 +9,9 @@ import {Action} from "../../libraries/types/savedata/action";
 import {getToggleTooltip} from "../../libraries/helpers/getToggleTooltip";
 
 export class SubstitutionRecordSetting {
-    private setting: Setting | null = null;
     public fromInput?: TextComponent;
     public toInput?: TextComponent;
+    private setting: Setting | null = null;
 
     constructor(
         private readonly _record: ModifiableSubstitutionRecord,

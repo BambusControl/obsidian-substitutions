@@ -2,5 +2,5 @@ import {ModifiableSubstitutionRecord} from "../types/savedata/modifiableSubstitu
 import {Action} from "../types/savedata/action";
 
 export function recordNotDeleted(record: ModifiableSubstitutionRecord): boolean {
-    return record.action != Action.Delete
+    return record.action != Action.Delete;
 }

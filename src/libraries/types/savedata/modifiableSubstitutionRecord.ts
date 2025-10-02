@@ -4,5 +4,5 @@ import {SubstitutionRecordIdentifier} from "./substitutionRecordIdentifier";
 
 export interface ModifiableSubstitutionRecord extends SubstitutionRecord {
     readonly id: SubstitutionRecordIdentifier;
-    action: Action
+    action: Action;
 }

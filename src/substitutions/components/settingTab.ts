@@ -15,7 +15,13 @@ export class SettingTab extends PluginSettingTab {
         private readonly dataStore: SubstitutionsStore,
     ) {
         super(app, plugin);
-        this.containerEl.addClass("plugin", "substitutions", "settings-tab")
+    }
+
+    private get records(): SubstitutionRecordSetting[] {
+        return [
+            ...this.newRecords,
+            ...this.storedRecords,
+        ];
     }
 
     override async display(): Promise<void> {
@@ -23,6 +29,7 @@ export class SettingTab extends PluginSettingTab {
             return;
         }
 
+        this.containerEl.addClass("plugin", "substitutions", "settings-tab");
         const headingContainer = this.containerEl.createDiv({cls: "heading"});
 
         new Setting(headingContainer)
@@ -40,7 +47,7 @@ export class SettingTab extends PluginSettingTab {
         this.storedRecords = (await this.dataStore.getModifiableSubstitutionRecords())
             .map(sr => new SubstitutionRecordSetting(sr, substitutionsContainer));
 
-        registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords)
+        registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords);
 
         for (const recordSetting of this.records) {
             recordSetting.display();
@@ -52,13 +59,6 @@ export class SettingTab extends PluginSettingTab {
     override async hide(): Promise<void> {
         await this.dataStore.overwriteSubstitutionRecords(
             this.records.map(sr => sr.record)
-        )
-    }
-
-    private get records(): SubstitutionRecordSetting[] {
-        return [
-            ...this.newRecords,
-            ...this.storedRecords,
-        ];
+        );
     }
 }

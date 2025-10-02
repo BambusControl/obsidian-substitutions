@@ -4,7 +4,7 @@ export function defaultState(value?: Partial<SubstitutionState>): SubstitutionSt
     return {
         ...DEFAULTS,
         ...value,
-    }
+    };
 }
 
 const DEFAULTS: SubstitutionState = {
@@ -12,4 +12,4 @@ const DEFAULTS: SubstitutionState = {
     length: 0,
     matches: [],
     substitution: null,
-}
+};

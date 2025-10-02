@@ -6,5 +6,5 @@ export function removeIdentifier(value: ModifiableSubstitutionRecord): Substitut
         from: value.from,
         to: value.to,
         enabled: value.enabled
-    }
+    };
 }

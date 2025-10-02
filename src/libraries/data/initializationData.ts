@@ -19,17 +19,6 @@ export function initializationData(): SaveData {
                     to: "®",
                     enabled: false
                 },*/
-                /* Narrow use cases */
-                /*{
-                    from: "tm",
-                    to: "™",
-                    enabled: false
-                },*/
-                /*{
-                    from: "c/o",
-                    to: "℅",
-                    enabled: false
-                },*/
                 {
                     from: "...",
                     to: "…",
@@ -156,18 +145,6 @@ export function initializationData(): SaveData {
                     enabled: true
                 },
                 {
-                    /* Conflicts with Markdown horizontal rule syntax */
-                    from: "--",
-                    to: "–",
-                    enabled: false
-                },
-                {
-                    /* Conflicts with Markdown horizontal rule syntax */
-                    from: "---",
-                    to: "—",
-                    enabled: false
-                },
-                {
                     from: "!=",
                     to: "≠",
                     enabled: true
@@ -203,11 +180,21 @@ export function initializationData(): SaveData {
                     enabled: true
                 },
                 {
+                    from: "≪<",
+                    to: "⋘",
+                    enabled: true
+                },
+                {
                     from: ">>",
                     to: "≫",
                     enabled: true
                 },
+                {
+                    from: "≫>",
+                    to: "⋙",
+                    enabled: true
+                },
             ]
         }
-    }
+    };
 }

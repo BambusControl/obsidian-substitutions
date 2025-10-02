@@ -31,7 +31,7 @@ export class AddSubstitutionModal extends Modal {
         const setting = registerNewSubstitutionRecordSetting(
             newSubstitutionsContainer,
             this.newRecords,
-            { from: this.placeholderValue }
+            {from: this.placeholderValue}
         );
 
         for (const recordSetting of this.newRecords) {

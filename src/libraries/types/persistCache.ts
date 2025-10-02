@@ -21,7 +21,7 @@ export class PersistCache<T> {
     }
 
     set(value: T) {
-        this.value = value
+        this.value = value;
     }
 
     async persist(): Promise<T> {

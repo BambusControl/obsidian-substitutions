@@ -2,10 +2,14 @@ import {SubstitutionsData} from "../../libraries/types/savedata/substitutionsDat
 
 export interface RootDataStore {
     isInitialized(): Promise<boolean>;
-    setInitialized(value: boolean): Promise<void>
+
+    setInitialized(value: boolean): Promise<void>;
+
     isCurrentVersion(): Promise<boolean>;
 
-    getSubstitutions(): Promise<SubstitutionsData>
-    overwriteSubstitutions(substitutions: SubstitutionsData): Promise<SubstitutionsData>
-    setInitializedSubstitutions(value: boolean): Promise<void>
+    getSubstitutions(): Promise<SubstitutionsData>;
+
+    overwriteSubstitutions(substitutions: SubstitutionsData): Promise<SubstitutionsData>;
+
+    setInitializedSubstitutions(value: boolean): Promise<void>;
 }

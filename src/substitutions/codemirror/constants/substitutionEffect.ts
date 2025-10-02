@@ -17,4 +17,4 @@ export const substitutionEffect = {
      * Replace substitution with the former target string.
      */
     revert: StateEffect.define(),
-}
+};

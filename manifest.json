@@ -1,10 +1,10 @@
 {
-	"id": "substitutions",
-	"name": "Substitutions",
-	"version": "0.4.1",
-	"minAppVersion": "1.5.12",
-	"description": "Automatically replace text fragments with symbols or different text",
-	"author": "BambusControl",
-	"authorUrl": "https://github.com/BambusControl",
-	"isDesktopOnly": false
+  "id": "substitutions",
+  "name": "Substitutions",
+  "version": "0.4.2",
+  "minAppVersion": "1.5.12",
+  "description": "Automatically replace text fragments with symbols or different text",
+  "author": "BambusControl",
+  "authorUrl": "https://github.com/BambusControl",
+  "isDesktopOnly": false
 }
