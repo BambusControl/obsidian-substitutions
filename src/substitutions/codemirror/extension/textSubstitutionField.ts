@@ -29,6 +29,7 @@ export function textSubstitutionField(
 
         update(current, transaction) {
             let output = current;
+            let wasUpdated = false;
 
             for (const effect of transaction.effects) {
 
@@ -38,6 +39,7 @@ export function textSubstitutionField(
                         ...output,
                         cache: sliceDoc(transaction.state, output.length),
                     };
+                    wasUpdated = true;
 
                 } else if (effect.is(substitutionEffect.substitute)) {
 
@@ -49,6 +51,7 @@ export function textSubstitutionField(
                             endPosition: effect.value.endPosition,
                         }
                     };
+                    wasUpdated = true;
 
                 } else if (effect.is(substitutionEffect.revert)) {
 
@@ -56,10 +59,12 @@ export function textSubstitutionField(
                         ...output,
                         substitution: null,
                     };
+                    wasUpdated = true;
 
                 }
             }
 
+            console.log("Field update", wasUpdated, output.cache);
             return output;
         },
     });

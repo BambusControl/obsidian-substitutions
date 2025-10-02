@@ -5,18 +5,26 @@ import {defaultState} from "../constants/defaultState";
 import {SubstitutionState} from "../../../libraries/types/substitutionState";
 import {replaceText} from "../transaction/replaceText";
 import {TextReplacement} from "../../../libraries/types/textReplacement";
+import {recordText} from "../transaction/recordText";
 
 export function characterDeleteHandler(
     substitutionField: StateField<SubstitutionState>
 ): Extension {
     return EditorView.updateListener.of((view) => {
-        const backspace = view.transactions.some(t => t.isUserEvent("delete.backward"));
+        const is_delete = view.transactions.some(t => t.isUserEvent("delete"));
+        const is_backspace = view.transactions.some(t => t.isUserEvent("delete.backward"));
 
-        if (!backspace) {
+        if (!is_delete) {
             return;
         }
 
         const state = view.state;
+
+        if (is_delete && !is_backspace) {
+            view.view.dispatch(recordText(state))
+            return;
+        }
+
         const selection = state.selection.main;
 
         if (selection.from !== selection.to) {
@@ -27,7 +35,7 @@ export function characterDeleteHandler(
 
         const transactions = selection.to === field.substitution?.endPosition
             ? revertSubstitution(state, field.substitution)
-            : updateStateWithDelete(state);
+            : [recordText(state)];
 
         view.view.dispatch(...transactions);
     });
@@ -48,14 +56,4 @@ function revertSubstitution(state: EditorState, replacement: TextReplacement): T
     });
 
     return [revertText, revertEffect];
-}
-
-function updateStateWithDelete(state: EditorState): TransactionSpec[] {
-    return [
-        state.update({
-            effects: [
-                substitutionEffect.update.of(null)
-            ]
-        })
-    ];
 }

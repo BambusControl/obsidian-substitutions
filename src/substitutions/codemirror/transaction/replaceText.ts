@@ -15,11 +15,9 @@ export function replaceText(state: EditorState, source: string, replacement: str
 
         console.info(
             "Replacing",
-            `\n\t${JSON.stringify(source)} [${replacementRange.from}-${replacementRange.to}]`,
-            `->`,
-            `${JSON.stringify(replacement)} [${replacementRange.from}-${newCursorPosition - 1}]`,
-            "\nCursor",
-            `\n\t${cursor.from} -> ${newCursorPosition}`
+            `\n\t[${replacementRange.from}-${replacementRange.to}] ${JSON.stringify(source)}`,
+            `\n\t[${replacementRange.from}-${newCursorPosition - 1}] ${JSON.stringify(replacement)}`,
+            `\nCursor moved from ${cursor.from} to ${newCursorPosition}`
         );
 
         return {

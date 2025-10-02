@@ -12,6 +12,7 @@ export function characterInputHandler(
         const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
 
         if (!viewReadyForInput) {
+            console.log("Not ready for input");
             return false;
         }
 
@@ -22,6 +23,7 @@ export function characterInputHandler(
         const selectionMatch = from === primarySelection.from && to === primarySelection.to;
 
         if (multipleChars || !selectionMatch) {
+            console.log("Bad match", {multipleChars, selectionMatch});
             return false;
         }
 
@@ -30,6 +32,8 @@ export function characterInputHandler(
 
         const match = field.matches
             .find(m => targetString.endsWith(m.from));
+
+        console.log("Match", {match});
 
         const transactions = match != null
             /* Record and replace text on text match */
