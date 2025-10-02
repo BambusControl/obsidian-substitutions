@@ -6,7 +6,7 @@ export function replaceText(state: EditorState, source: string, replacement: str
 
         /* Selection of the text to be replaced */
         const replacementRange = EditorSelection.range(
-            cursor.anchor - (source.length - 1),
+            cursor.anchor - source.length,
             cursor.head
         );
 

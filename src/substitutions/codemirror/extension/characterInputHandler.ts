@@ -2,17 +2,16 @@ import {EditorView} from "@codemirror/view";
 import {Extension, StateField} from "@codemirror/state";
 import {SubstitutionState} from "../../../libraries/types/substitutionState";
 import {defaultState} from "../constants/defaultState";
-import {recordText} from "../transaction/recordText";
 import {replaceText} from "../transaction/replaceText";
 
 export function characterInputHandler(
     substitutionField: StateField<SubstitutionState>
 ): Extension {
+    /* This has to be an inputHandler for it to be able to replace text */
     return EditorView.inputHandler.of((view, from, to, text, insert) => {
         const viewReadyForInput = !(view.compositionStarted || view.state.readOnly);
 
         if (!viewReadyForInput) {
-            console.log("Not ready for input");
             return false;
         }
 
@@ -23,7 +22,6 @@ export function characterInputHandler(
         const selectionMatch = from === primarySelection.from && to === primarySelection.to;
 
         if (multipleChars || !selectionMatch) {
-            console.log("Bad match", {multipleChars, selectionMatch});
             return false;
         }
 
@@ -33,15 +31,16 @@ export function characterInputHandler(
         const match = field.matches
             .find(m => targetString.endsWith(m.from));
 
-        console.log("Match", {match});
+        if (match == null) {
+            return false;
+        }
 
-        const transactions = match != null
-            /* Record and replace text on text match */
-            ? [recordText(view.state), replaceText(view.state, match.from, match.to)]
-            /* Insert and record text on no match */
-            : [insert(), recordText(view.state)];
+        // Run the default behaviour before we do anything to update the state
+        view.dispatch(insert());
 
-        view.dispatch(...transactions);
+        /* The recording of the typed character is already handled in the stateUpdater */
+        const transaction = replaceText(view.state, match.from, match.to);
+        view.dispatch(transaction);
 
         return true;
     });
