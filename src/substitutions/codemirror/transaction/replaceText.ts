@@ -34,6 +34,7 @@ export function replaceText(state: EditorState, source: string, replacement: str
                 },
             ],
             effects: [
+                substitutionEffect.update.of(null),
                 substitutionEffect.substitute.of({
                     from: source,
                     to: replacement,
