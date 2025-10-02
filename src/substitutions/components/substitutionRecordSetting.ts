@@ -39,6 +39,26 @@ export class SubstitutionRecordSetting {
         }
 
         setting
+            .addExtraButton((button) => {
+                button
+                    .setIcon("arrow-up")
+                    .setTooltip("Move up")
+                    .onClick(() => {
+                        /* TODO: move up in the order */
+                    });
+
+                button.extraSettingsEl.addClass("hide-if-empty");
+            })
+            .addExtraButton((button) => {
+                button
+                    .setIcon("arrow-down")
+                    .setTooltip("Move down")
+                    .onClick(() => {
+                        /* TODO: move up in the order */
+                    });
+
+                button.extraSettingsEl.addClass("hide-if-empty");
+            })
             .addToggle((toggleInput) => {
                 toggleInput
                     .setTooltip(getToggleTooltip(toggleInput.getValue()))
