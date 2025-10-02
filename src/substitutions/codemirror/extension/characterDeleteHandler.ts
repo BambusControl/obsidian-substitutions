@@ -10,7 +10,7 @@ export function characterDeleteHandler(
     substitutionField: StateField<SubstitutionState>
 ): Extension {
     return EditorView.updateListener.of((view) => {
-        const backspace = view.transactions.some(t => t.isUserEvent("delete.backward"))
+        const backspace = view.transactions.some(t => t.isUserEvent("delete.backward"));
 
         if (!backspace) {
             return;

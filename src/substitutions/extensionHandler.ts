@@ -12,7 +12,7 @@ export class ExtensionHandler {
     ) {
         ExtensionHandler.replaceExtensions(extensions, records);
 
-        console.log("Reloading CodeMirror extensions")
+        console.log("Reloading CodeMirror extensions");
 
         workspace.updateOptions();
     }
@@ -24,7 +24,7 @@ export class ExtensionHandler {
     ) {
         ExtensionHandler.replaceExtensions(extensions, records);
 
-        console.log("Registering CodeMirror extensions")
+        console.log("Registering CodeMirror extensions");
 
         plugin.registerEditorExtension(extensions);
     }

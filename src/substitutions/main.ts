@@ -6,7 +6,7 @@ import {NewDataInitializer} from "./services/impl/newDataInitializer";
 import {SubstitutionsStorage} from "./services/impl/substitutionsStorage";
 import {Extension} from "@codemirror/state";
 import {ExtensionHandler} from "./extensionHandler";
-import { AddSubstitutionModal } from "./components/addSubstitutionModal";
+import {AddSubstitutionModal} from "./components/addSubstitutionModal";
 
 /* Used by Obsidian */
 // noinspection JSUnusedGlobalSymbols
@@ -44,7 +44,7 @@ export default class SubstitutionsPlugin extends Plugin {
         console.info("Adding editor extension");
 
         const records = await substitutionStorage.getSubstitutionRecords();
-        ExtensionHandler.replaceAndRegister(this.extensions, records, this)
+        ExtensionHandler.replaceAndRegister(this.extensions, records, this);
 
         console.info("Adding UI elements");
 

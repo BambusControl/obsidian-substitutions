@@ -22,7 +22,7 @@ export class RootPluginDataStorage implements RootDataStore {
         const data = await this.storedData.get();
         return data.initialized
             && data.version === CURRENT_VERSION
-        ;
+            ;
     }
 
     async setInitialized(value: boolean): Promise<void> {
@@ -38,7 +38,7 @@ export class RootPluginDataStorage implements RootDataStore {
         return saveDataVersion === CURRENT_VERSION;
     }
 
-     async getSubstitutions(): Promise<SubstitutionsData> {
+    async getSubstitutions(): Promise<SubstitutionsData> {
         return (await this.storedData.get()).substitutions;
     }
 

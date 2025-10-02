@@ -209,5 +209,5 @@ export function initializationData(): SaveData {
                 },
             ]
         }
-    }
+    };
 }
