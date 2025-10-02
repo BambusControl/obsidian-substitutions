@@ -37,7 +37,7 @@ function revertSubstitution(state: EditorState, replacement: TextReplacement): T
      * For now, we only revert the last substitution.
      */
 
-    const revertText = replaceText(state, replacement.to, replacement.from);
+    const revertText = replaceText(state, replacement.to, replacement.from, true);
     const revertEffect = state.update({
         effects: [
             substitutionEffect.revert.of(null),
