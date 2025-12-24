@@ -13,6 +13,10 @@
             &:not(.filled-substitution) .setting-item-control > .hide-if-empty {
                 visibility: hidden;
             }
+
+            &.filled-substitution .setting-item-control > .hide-if-full {
+                visibility: hidden;
+            }
         }
     }
 

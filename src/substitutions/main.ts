@@ -7,7 +7,7 @@ import {SubstitutionsStorage} from "./services/impl/substitutionsStorage";
 import {Extension} from "@codemirror/state";
 import {ExtensionHandler} from "./extensionHandler";
 import {AddSubstitutionModal} from "./components/addSubstitutionModal";
-import {From, LinkUp} from "obsidian-linkup";
+import {ExternalApi} from "./externalApi";
 
 /* Used by Obsidian */
 // noinspection JSUnusedGlobalSymbols
@@ -53,6 +53,7 @@ export default class SubstitutionsPlugin extends Plugin {
             this.app,
             this,
             substitutionStorage,
+            new ExternalApi(this.app),
         ));
 
         this.addCommand({
@@ -67,23 +68,8 @@ export default class SubstitutionsPlugin extends Plugin {
             },
         });
 
-        this.addCommand({
-            id: "test-external-api",
-            name: "Test External API",
-            callback: () => {
-                this.useApi()
-            },
-        });
-
         console.timeEnd("Plugin load time");
         console.groupEnd();
-    }
-
-    @LinkUp
-    useApi(
-        @From("unicode-search") unicodeSearch = null!,
-    ): any {
-        unicodeSearch.askForCharacter(this.app, (results) => console.info("useApi", {results}))
     }
 }
 

@@ -2,6 +2,7 @@ import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
 import {SubstitutionsStore} from "../services/substitutionsStore";
 import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
 import {registerNewSubstitutionRecordSetting} from "./registerNewSubstitutionRecordSetting";
+import {ExternalApi} from "../externalApi";
 
 export class SettingTab extends PluginSettingTab {
 
@@ -13,6 +14,7 @@ export class SettingTab extends PluginSettingTab {
         app: App,
         plugin: Plugin,
         private readonly dataStore: SubstitutionsStore,
+        private readonly externalApi: ExternalApi,
     ) {
         super(app, plugin);
     }
@@ -41,13 +43,28 @@ export class SettingTab extends PluginSettingTab {
             )
         ;
 
+        new Setting(headingContainer)
+            .setName("Add from Unicode Search")
+            .setDesc("Insert a new substitution record from the Unicode Search plugin.")
+            .addButton(button => {
+                button.setIcon("type-outline")
+                    .setTooltip("Open Unicode Search Menu")
+                    .onClick(async () => {
+                        button.setDisabled(true);
+                        const char = await this.externalApi.askForCharacter()
+                        console.log("Open Unicode Search Menu", {char});
+                        setting.toInput?.setValue(char)
+                        button.setDisabled(false);
+                    })
+            })
+
         const newSubstitutionsContainer = this.containerEl.createDiv({cls: ["substitutions-list", "new"]});
         const substitutionsContainer = this.containerEl.createDiv({cls: "substitutions-list"});
 
         this.storedRecords = (await this.dataStore.getModifiableSubstitutionRecords())
             .map(sr => new SubstitutionRecordSetting(sr, substitutionsContainer));
 
-        registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords);
+        const setting = registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords);
 
         for (const recordSetting of this.records) {
             recordSetting.display();
