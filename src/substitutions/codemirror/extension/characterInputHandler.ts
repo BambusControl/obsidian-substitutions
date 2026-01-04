@@ -25,6 +25,10 @@ export function characterInputHandler(
             return false;
         }
 
+        /*
+        * The state handler gives us the last `length` characters at the current cursor
+        * We append the just-typed character to check if it will match a substitution record
+        */
         const field = view.state.field(substitutionField, false) ?? defaultState();
         const targetString = (field.cache + text).slice(-field.length);
 
