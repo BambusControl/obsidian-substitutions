@@ -56,8 +56,11 @@ export class SettingTab extends PluginSettingTab {
         this.rendered = true;
     }
 
-    override async hide(): Promise<void> {
-        await this.dataStore.overwriteSubstitutionRecords(
+    override hide(): Promise<void> {
+        this.containerEl.empty();
+        this.rendered = false;
+
+        return this.dataStore.overwriteSubstitutionRecords(
             this.records.map(sr => sr.record)
         );
     }
