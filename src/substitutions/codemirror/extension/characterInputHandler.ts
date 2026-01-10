@@ -3,6 +3,7 @@ import {Extension, StateField} from "@codemirror/state";
 import {SubstitutionState} from "../../../libraries/types/substitutionState";
 import {defaultState} from "../constants/defaultState";
 import {replaceText} from "../transaction/replaceText";
+import {intoRegexMatch} from "../../../libraries/types/savedata/intoRegexMatch";
 
 export function characterInputHandler(
     substitutionField: StateField<SubstitutionState>
@@ -30,20 +31,36 @@ export function characterInputHandler(
         * We append the just-typed character to check if it will match a substitution record
         */
         const field = view.state.field(substitutionField, false) ?? defaultState();
-        const targetString = (field.cache + text).slice(-field.length);
+        const targetString = (field.cache + text)
 
-        const match = field.matches
-            .find(m => targetString.endsWith(m.from));
 
-        if (match == null) {
+        const literalMatch = field.matches
+            .find(m => !m.regex && targetString.endsWith(m.from));
+
+        const regexMatch = field.matches
+            .filter(m => m.regex)
+            .map(m => intoRegexMatch(targetString, m))
+            .find(m => m != null);
+
+        console.log({
+            targetString,
+            literalMatch,
+            regexMatch
+        });
+
+        if (literalMatch == null && regexMatch == null) {
             return false;
         }
+
+        /* One of these must be non-null */
+        const replaceFrom = (literalMatch?.from ?? regexMatch?.replaceText)!;
+        const replaceTo = (literalMatch?.to ?? regexMatch?.replaceWith)!;
 
         // Run the default behaviour before we do anything to update the state
         view.dispatch(insert());
 
         /* The recording of the typed character is already handled in the stateUpdater */
-        const transaction = replaceText(view.state, match.from, match.to);
+        const transaction = replaceText(view.state, replaceFrom, replaceTo);
         view.dispatch(transaction);
 
         return true;

@@ -6,7 +6,7 @@ import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
 import {unescapeSequences} from "../../libraries/helpers/sequences/unescapeSequences";
 import {escapeSequences} from "../../libraries/helpers/sequences/escapeSequences";
 import {Action} from "../../libraries/types/savedata/action";
-import {getToggleTooltip} from "../../libraries/helpers/getToggleTooltip";
+import {getRegexToggleTooltip, getSubstitutionToggleTooltip} from "../../libraries/helpers/getTooltips";
 
 export class SubstitutionRecordSetting {
     public fromInput?: TextComponent;
@@ -41,11 +41,11 @@ export class SubstitutionRecordSetting {
         setting
             .addToggle((toggleInput) => {
                 toggleInput
-                    .setTooltip(getToggleTooltip(toggleInput.getValue()))
+                    .setTooltip(getSubstitutionToggleTooltip(toggleInput.getValue()))
                     .setValue(substitution.enabled)
                     .onChange((value) => {
                         substitution.enabled = value;
-                        toggleInput.setTooltip(getToggleTooltip(value));
+                        toggleInput.setTooltip(getSubstitutionToggleTooltip(value));
                     });
 
                 toggleInput.toggleEl.addClass("hide-if-empty");
@@ -92,6 +92,15 @@ export class SubstitutionRecordSetting {
                     })
                     .setValue(escapeSequences(substitution.to));
                 this.toInput = textInput;
+            })
+            .addToggle((toggleInput) => {
+                toggleInput
+                    .setTooltip(getRegexToggleTooltip(toggleInput.getValue()))
+                    .setValue(substitution.regex)
+                    .onChange((value) => {
+                        substitution.regex = value;
+                        toggleInput.setTooltip(getRegexToggleTooltip(value));
+                    });
             })
             .addExtraButton((button) => {
                 button

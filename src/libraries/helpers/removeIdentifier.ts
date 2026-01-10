@@ -5,6 +5,7 @@ export function removeIdentifier(value: ModifiableSubstitutionRecord): Substitut
     return {
         from: value.from,
         to: value.to,
-        enabled: value.enabled
+        enabled: value.enabled,
+        regex: value.regex
     };
 }

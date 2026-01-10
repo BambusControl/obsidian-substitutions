@@ -11,12 +11,8 @@ export function textSubstitutionField(
 
     const potentialMatches = substitutionRecords
         .filter(record => record.enabled);
-    const lengths = potentialMatches
-        .map(pm => pm.from.length);
-    const maxLength = Math.max(...lengths);
 
     const newDefaultState = (value?: Partial<SubstitutionState> | undefined) => defaultState({
-        length: maxLength,
         matches: potentialMatches,
         ...value
     });
@@ -36,7 +32,7 @@ export function textSubstitutionField(
 
                     output = {
                         ...output,
-                        cache: sliceDoc(transaction.state, output.length),
+                        cache: sliceDoc(transaction.state),
                     };
 
                 } else if (effect.is(substitutionEffect.substitute)) {
