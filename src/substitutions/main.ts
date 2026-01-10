@@ -3,10 +3,10 @@ import {SettingTab} from "./components/settingTab";
 import {RootPluginDataStorage} from "./services/impl/rootPluginDataStorage";
 import {NewDataInitializer} from "./services/impl/newDataInitializer";
 
-import {SubstitutionsStorage} from "./services/impl/substitutionsStorage";
+import {UserSwapDefStorage} from "./services/impl/userSwapDefStorage";
 import {Extension} from "@codemirror/state";
 import {ExtensionHandler} from "./extensionHandler";
-import {AddSubstitutionModal} from "./components/addSubstitutionModal";
+import {AddSwapDefModal} from "./components/addSwapDefModal";
 
 /* Used by Obsidian */
 // noinspection JSUnusedGlobalSymbols
@@ -30,11 +30,11 @@ export default class SubstitutionsPlugin extends Plugin {
         const dataStore = new RootPluginDataStorage(this);
         const initializer = new NewDataInitializer(dataStore);
 
-        const substitutionStorage = new SubstitutionsStorage(
+        const userSwapStorage = new UserSwapDefStorage(
             dataStore,
-            (records) => ExtensionHandler.replaceAndUpdate(
+            (swaps) => ExtensionHandler.replaceAndUpdate(
                 this.extensions,
-                records,
+                swaps,
                 this.app.workspace
             )
         );
@@ -43,24 +43,24 @@ export default class SubstitutionsPlugin extends Plugin {
 
         console.info("Adding editor extension");
 
-        const records = await substitutionStorage.getSubstitutionRecords();
-        ExtensionHandler.replaceAndRegister(this.extensions, records, this);
+        const currentSwaps = await userSwapStorage.getDefinedSwaps();
+        ExtensionHandler.replaceAndRegister(this.extensions, currentSwaps, this);
 
         console.info("Adding UI elements");
 
         this.addSettingTab(new SettingTab(
             this.app,
             this,
-            substitutionStorage,
+            userSwapStorage,
         ));
 
         this.addCommand({
             id: "add-substitution",
             name: "Add Substitution",
             editorCallback: (editor, _) => {
-                new AddSubstitutionModal(
+                new AddSwapDefModal(
                     this.app,
-                    substitutionStorage,
+                    userSwapStorage,
                     editor.getSelection()
                 ).open();
             },

@@ -1,7 +1,7 @@
-import {ModifiableSubstitutionRecord} from "../types/savedata/modifiableSubstitutionRecord";
-import {SubstitutionRecord} from "../types/savedata/substitutionRecord";
+import {ModifiableSwapDef} from "../types/savedata/modifiableSwapDef";
+import {SwapDef} from "../types/savedata/swapDef";
 
-export function removeIdentifier(value: ModifiableSubstitutionRecord): SubstitutionRecord {
+export function removeIdentifier(value: ModifiableSwapDef): SwapDef {
     return {
         from: value.from,
         to: value.to,

@@ -1,4 +1,4 @@
-export interface SubstitutionRecord {
+export interface SwapDef {
     from: string;
     to: string;
     enabled: boolean;

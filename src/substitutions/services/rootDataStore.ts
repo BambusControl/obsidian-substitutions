@@ -1,4 +1,4 @@
-import {SubstitutionsData} from "../../libraries/types/savedata/substitutionsData";
+import {SwapDefinitionsData} from "../../libraries/types/savedata/swapDefinitionsData";
 
 export interface RootDataStore {
     isInitialized(): Promise<boolean>;
@@ -7,9 +7,9 @@ export interface RootDataStore {
 
     isCurrentVersion(): Promise<boolean>;
 
-    getSubstitutions(): Promise<SubstitutionsData>;
+    getSwapDefinitionData(): Promise<SwapDefinitionsData>;
 
-    overwriteSubstitutions(substitutions: SubstitutionsData): Promise<SubstitutionsData>;
+    overwriteSwapDefinitionData(swapData: SwapDefinitionsData): Promise<SwapDefinitionsData>;
 
-    setInitializedSubstitutions(value: boolean): Promise<void>;
+    setInitializedSwapDefinitionData(value: boolean): Promise<void>;
 }

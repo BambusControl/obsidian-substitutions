@@ -1,28 +1,28 @@
-import {ModifiableSubstitutionRecord} from "../../libraries/types/savedata/modifiableSubstitutionRecord";
+import {ModifiableSwapDef} from "../../libraries/types/savedata/modifiableSwapDef";
 import {Setting, TextComponent} from "obsidian";
 import {MaybePromise} from "../../libraries/types/maybePromise";
-import {recordFilled} from "../../libraries/helpers/recordFilled";
+import {swapFilled} from "../../libraries/helpers/swapFilled";
 import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
 import {unescapeSequences} from "../../libraries/helpers/sequences/unescapeSequences";
 import {escapeSequences} from "../../libraries/helpers/sequences/escapeSequences";
 import {Action} from "../../libraries/types/savedata/action";
-import {getRegexToggleTooltip, getSubstitutionToggleTooltip} from "../../libraries/helpers/getTooltips";
+import {getRegexToggleTooltip, getSwapToggleTooltip} from "../../libraries/helpers/getTooltips";
 
-export class SubstitutionRecordSetting {
+export class UserFacingSwapSetting {
     public fromInput?: TextComponent;
     public toInput?: TextComponent;
     private setting: Setting | null = null;
 
     constructor(
-        private readonly _record: ModifiableSubstitutionRecord,
+        private readonly _modSwapDef: ModifiableSwapDef,
         private readonly _container: HTMLElement,
         private readonly _onFill: () => MaybePromise<void> = () => {
         },
     ) {
     }
 
-    get record(): ModifiableSubstitutionRecord {
-        return this._record;
+    get swapDef(): ModifiableSwapDef {
+        return this._modSwapDef;
     }
 
     display(): Setting {
@@ -30,22 +30,22 @@ export class SubstitutionRecordSetting {
             return this.setting;
         }
 
-        const substitution = this._record;
+        const modSwapDef = this._modSwapDef;
         const setting = new Setting(this._container)
-            .setClass("substitution-record");
+            .setClass("user-swap-definition");
 
-        if (recordFilled(substitution)) {
-            setting.setClass("filled-substitution");
+        if (swapFilled(modSwapDef)) {
+            setting.setClass("just-filled");
         }
 
         setting
             .addToggle((toggleInput) => {
                 toggleInput
-                    .setTooltip(getSubstitutionToggleTooltip(toggleInput.getValue()))
-                    .setValue(substitution.enabled)
+                    .setTooltip(getSwapToggleTooltip(toggleInput.getValue()))
+                    .setValue(modSwapDef.enabled)
                     .onChange((value) => {
-                        substitution.enabled = value;
-                        toggleInput.setTooltip(getSubstitutionToggleTooltip(value));
+                        modSwapDef.enabled = value;
+                        toggleInput.setTooltip(getSwapToggleTooltip(value));
                     });
 
                 toggleInput.toggleEl.addClass("hide-if-empty");
@@ -56,9 +56,9 @@ export class SubstitutionRecordSetting {
                     .onChange((input) => {
                         console.info("Changing from", input);
                         /* Don't unescape the input, it is always sanitized */
-                        substitution.from = input;
+                        modSwapDef.from = input;
                     })
-                    .setValue(substitution.from);
+                    .setValue(modSwapDef.from);
                 this.fromInput = textInput;
             })
             .addExtraButton((button) => {
@@ -66,11 +66,11 @@ export class SubstitutionRecordSetting {
                     .setIcon("arrow-left-right")
                     .setTooltip("Swap from and to")
                     .onClick(() => {
-                        const new_from = "" + substitution.to;
-                        const new_to = "" + substitution.from;
+                        const new_from = "" + modSwapDef.to;
+                        const new_to = "" + modSwapDef.from;
 
-                        substitution.from = new_from;
-                        substitution.to = new_to;
+                        modSwapDef.from = new_from;
+                        modSwapDef.to = new_to;
 
                         this.fromInput?.setValue(new_from);
                         this.toInput?.setValue(new_to);
@@ -83,22 +83,22 @@ export class SubstitutionRecordSetting {
                     .setPlaceholder("with this")
                     .onChange(async (input) => {
                         console.info("Changing to", input);
-                        substitution.to = unescapeSequences(input);
-                        if (checkJustFilled(setting, substitution.to)) {
-                            setting.setClass("filled-substitution");
+                        modSwapDef.to = unescapeSequences(input);
+                        if (checkJustFilled(setting, modSwapDef.to)) {
+                            setting.setClass("just-filled");
                             await this._onFill();
                         }
 
                     })
-                    .setValue(escapeSequences(substitution.to));
+                    .setValue(escapeSequences(modSwapDef.to));
                 this.toInput = textInput;
             })
             .addToggle((toggleInput) => {
                 toggleInput
                     .setTooltip(getRegexToggleTooltip(toggleInput.getValue()))
-                    .setValue(substitution.regex)
+                    .setValue(modSwapDef.regex)
                     .onChange((value) => {
-                        substitution.regex = value;
+                        modSwapDef.regex = value;
                         toggleInput.setTooltip(getRegexToggleTooltip(value));
                     });
             })
@@ -107,7 +107,7 @@ export class SubstitutionRecordSetting {
                     .setIcon("x")
                     .setTooltip("Remove substitution")
                     .onClick(() => {
-                        substitution.action = Action.Delete;
+                        modSwapDef.action = Action.Delete;
                         setting.settingEl.hide();
                     });
 

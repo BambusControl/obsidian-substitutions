@@ -2,15 +2,15 @@ import {Setting} from "obsidian";
 
 export function checkJustFilled(
     setting: Setting,
-    record: string,
+    previousValue: string,
 ): boolean {
-    const isEmpty = record == "";
-    const wasFilled = setting.settingEl.hasClass("filled-substitution");
+    const isEmpty = previousValue == "";
+    const wasFilled = setting.settingEl.hasClass("just-filled");
 
     if (isEmpty || wasFilled) {
         return false;
     }
 
-    setting.settingEl.addClass("filled-substitution");
+    setting.settingEl.addClass("just-filled");
     return true;
 }

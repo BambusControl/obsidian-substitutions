@@ -1,10 +1,10 @@
 import {EditorState, TransactionSpec} from "@codemirror/state";
-import {substitutionEffect} from "../constants/substitutionEffect";
+import {effects} from "../constants/Effects";
 
 export function recordText(state: EditorState): TransactionSpec {
     return state.update({
         effects: [
-            substitutionEffect.update.of(null),
+            effects.update.of(null),
         ],
     });
 }

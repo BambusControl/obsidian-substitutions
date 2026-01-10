@@ -1,5 +1,5 @@
 import {EditorSelection, EditorState, TransactionSpec} from "@codemirror/state";
-import {substitutionEffect} from "../constants/substitutionEffect";
+import {effects} from "../constants/Effects";
 
 export function replaceText(state: EditorState, source: string, replacement: string, backspace: boolean = false): TransactionSpec {
     const changes = state.changeByRange((cursor) => {
@@ -34,8 +34,8 @@ export function replaceText(state: EditorState, source: string, replacement: str
                 },
             ],
             effects: [
-                substitutionEffect.update.of(null),
-                substitutionEffect.substitute.of({
+                effects.update.of(null),
+                effects.replace.of({
                     from: source,
                     to: replacement,
                     endPosition: lastCharacterPosition,

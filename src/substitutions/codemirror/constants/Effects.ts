@@ -2,7 +2,7 @@ import {StateEffect} from "@codemirror/state";
 
 import {TextReplacement} from "../../../libraries/types/textReplacement";
 
-export const substitutionEffect = {
+export const effects = {
     /**
      * Update the target string to check for substitution
      */
@@ -11,7 +11,7 @@ export const substitutionEffect = {
     /**
      * Replace the target string with a substitute
      */
-    substitute: StateEffect.define<TextReplacement>(),
+    replace: StateEffect.define<TextReplacement>(),
 
     /**
      * Replace substitution with the former target string.

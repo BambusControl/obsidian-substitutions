@@ -1,22 +1,22 @@
 .plugin.substitutions {
 
-    .substitutions-list {
+    .swap-definition-list {
         &.new {
             display: flex;
             flex-direction: column-reverse;
         }
 
-        .substitution-record {
+        .user-swap-definition {
             border: none;
             padding: .33em 0;
 
-            &:not(.filled-substitution) .setting-item-control > .hide-if-empty {
+            &:not(.just-filled) .setting-item-control > .hide-if-empty {
                 visibility: hidden;
             }
         }
     }
 
-    .substitution-record {
+    .user-swap-definition {
 
         .setting-item-info {
             display: none;

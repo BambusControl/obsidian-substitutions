@@ -1,18 +1,18 @@
 import {StateField} from "@codemirror/state";
-import {SubstitutionState} from "../../../libraries/types/substitutionState";
+import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 import {defaultState} from "../constants/defaultState";
-import {substitutionEffect} from "../constants/substitutionEffect";
-import {SubstitutionRecord} from "../../../libraries/types/savedata/substitutionRecord";
+import {effects} from "../constants/Effects";
+import {SwapDef} from "../../../libraries/types/savedata/swapDef";
 import {sliceDoc} from "../../../libraries/helpers/sliceDoc";
 
-export function textSubstitutionField(
-    substitutionRecords: SubstitutionRecord[]
-): StateField<SubstitutionState> {
+export function textSubstitutionsField(
+    swaps: SwapDef[]
+): StateField<SubstitutionsState> {
 
-    const potentialMatches = substitutionRecords
-        .filter(record => record.enabled);
+    const potentialMatches = swaps
+        .filter(swap => swap.enabled);
 
-    const newDefaultState = (value?: Partial<SubstitutionState> | undefined) => defaultState({
+    const newDefaultState = (value?: Partial<SubstitutionsState> | undefined) => defaultState({
         matches: potentialMatches,
         ...value
     });
@@ -28,29 +28,29 @@ export function textSubstitutionField(
 
             for (const effect of transaction.effects) {
 
-                if (effect.is(substitutionEffect.update)) {
+                if (effect.is(effects.update)) {
 
                     output = {
                         ...output,
                         cache: sliceDoc(transaction.state),
                     };
 
-                } else if (effect.is(substitutionEffect.substitute)) {
+                } else if (effect.is(effects.replace)) {
 
                     output = {
                         ...output,
-                        substitution: {
+                        replacement: {
                             from: effect.value.from,
                             to: effect.value.to,
                             endPosition: effect.value.endPosition,
                         }
                     };
 
-                } else if (effect.is(substitutionEffect.revert)) {
+                } else if (effect.is(effects.revert)) {
 
                     output = {
                         ...output,
-                        substitution: null,
+                        replacement: null,
                     };
 
                 }

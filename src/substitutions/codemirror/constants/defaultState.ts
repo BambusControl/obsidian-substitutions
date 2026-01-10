@@ -1,14 +1,14 @@
-import {SubstitutionState} from "../../../libraries/types/substitutionState";
+import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 
-export function defaultState(value?: Partial<SubstitutionState>): SubstitutionState {
+export function defaultState(value?: Partial<SubstitutionsState>): SubstitutionsState {
     return {
         ...DEFAULTS,
         ...value,
     };
 }
 
-const DEFAULTS: SubstitutionState = {
+const DEFAULTS: SubstitutionsState = {
     cache: "",
     matches: [],
-    substitution: null,
+    replacement: null,
 };

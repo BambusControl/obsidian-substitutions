@@ -1,2 +1,2 @@
-import {SubstitutionRecord} from "./substitutionRecord";
-import {ModifiableSubstitutionRecord} from "./modifiableSubstitutionRecord";
+import {SwapDef} from "./swapDef";
+import {ModifiableSwapDef} from "./modifiableSwapDef";

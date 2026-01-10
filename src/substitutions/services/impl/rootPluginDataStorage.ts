@@ -3,7 +3,7 @@ import {CURRENT_VERSION, SaveData} from "../../../libraries/types/savedata/saveD
 import {PluginDataLoader} from "../../../libraries/types/pluginDataLoader";
 import {importData} from "../../../libraries/helpers/importData";
 import {RootDataStore} from "../rootDataStore";
-import {SubstitutionsData} from "../../../libraries/types/savedata/substitutionsData";
+import {SwapDefinitionsData} from "../../../libraries/types/savedata/swapDefinitionsData";
 
 export class RootPluginDataStorage implements RootDataStore {
 
@@ -38,26 +38,26 @@ export class RootPluginDataStorage implements RootDataStore {
         return saveDataVersion === CURRENT_VERSION;
     }
 
-    async getSubstitutions(): Promise<SubstitutionsData> {
+    async getSwapDefinitionData(): Promise<SwapDefinitionsData> {
         return (await this.storedData.get()).substitutions;
     }
 
-    async overwriteSubstitutions(substitutions: SubstitutionsData): Promise<SubstitutionsData> {
+    async overwriteSwapDefinitionData(swapData: SwapDefinitionsData): Promise<SwapDefinitionsData> {
         const mergedData = await this.mergeData({
-            substitutions: substitutions,
+            substitutions: swapData,
         });
 
         return mergedData.substitutions;
     }
 
-    async setInitializedSubstitutions(value: boolean): Promise<void> {
-        const data = await this.getSubstitutions();
-        const mergedData: SubstitutionsData = {
+    async setInitializedSwapDefinitionData(value: boolean): Promise<void> {
+        const data = await this.getSwapDefinitionData();
+        const mergedData: SwapDefinitionsData = {
             ...data,
             initialized: value,
         };
 
-        await this.overwriteSubstitutions(mergedData);
+        await this.overwriteSwapDefinitionData(mergedData);
     }
 
     private async mergeData(data: Partial<SaveData>): Promise<SaveData> {

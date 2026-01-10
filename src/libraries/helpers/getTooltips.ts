@@ -1,4 +1,4 @@
-export function getSubstitutionToggleTooltip(value: boolean) {
+export function getSwapToggleTooltip(value: boolean) {
     return (value ? "Disable" : "Enable")
         + " this substitution";
 }

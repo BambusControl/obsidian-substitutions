@@ -1,16 +1,16 @@
 import {Extension} from "@codemirror/state";
-import {SubstitutionRecord} from "../libraries/types/savedata/substitutionRecord";
+import {SwapDef} from "../libraries/types/savedata/swapDef";
 import {Plugin, Workspace} from "obsidian";
-import {substitution} from "./codemirror/substitution";
+import {substitutionsExtension} from "./codemirror/substitutionsExtension";
 
 export class ExtensionHandler {
 
     static replaceAndUpdate(
         extensions: Extension[],
-        records: SubstitutionRecord[],
+        swapDefinitions: SwapDef[],
         workspace: Workspace
     ) {
-        ExtensionHandler.replaceExtensions(extensions, records);
+        ExtensionHandler.replaceExtensions(extensions, swapDefinitions);
 
         console.info("Reloading CodeMirror extensions");
 
@@ -19,7 +19,7 @@ export class ExtensionHandler {
 
     static replaceAndRegister(
         extensions: Extension[],
-        records: SubstitutionRecord[],
+        records: SwapDef[],
         plugin: Plugin
     ) {
         ExtensionHandler.replaceExtensions(extensions, records);
@@ -31,12 +31,12 @@ export class ExtensionHandler {
 
     private static replaceExtensions(
         extensions: Extension[],
-        records: SubstitutionRecord[]
+        swapDefinitions: SwapDef[]
     ) {
         while (extensions.length > 0) {
             extensions.pop();
         }
 
-        extensions.push(substitution(records));
+        extensions.push(substitutionsExtension(swapDefinitions));
     }
 }

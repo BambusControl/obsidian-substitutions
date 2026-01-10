@@ -1,7 +1,7 @@
-import {SubstitutionRecord} from "./substitutionRecord";
+import {SwapDef} from "./swapDef";
 import {RegexMatch} from "./regexMatch";
 
-export function intoRegexMatch(text: string, match: SubstitutionRecord): null | RegexMatch {
+export function intoRegexMatch(text: string, match: SwapDef): null | RegexMatch {
     const regexInput = match.from;
 
     // This expression has two parts.

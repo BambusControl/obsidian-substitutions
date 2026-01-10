@@ -1,23 +1,23 @@
 import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
-import {SubstitutionsStore} from "../services/substitutionsStore";
-import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
-import {registerNewSubstitutionRecordSetting} from "./registerNewSubstitutionRecordSetting";
+import {UserSwapDefStore} from "../services/userSwapDefStore";
+import {UserFacingSwapSetting} from "./userFacingSwapSetting";
+import {addNewUserFacingSwapSetting} from "./addNewUserFacingSwapSetting";
 
 export class SettingTab extends PluginSettingTab {
 
     private rendered = false;
-    private storedRecords: SubstitutionRecordSetting[] = [];
-    private readonly newRecords: SubstitutionRecordSetting[] = [];
+    private storedRecords: UserFacingSwapSetting[] = [];
+    private readonly newRecords: UserFacingSwapSetting[] = [];
 
     constructor(
         app: App,
         plugin: Plugin,
-        private readonly dataStore: SubstitutionsStore,
+        private readonly dataStore: UserSwapDefStore,
     ) {
         super(app, plugin);
     }
 
-    private get records(): SubstitutionRecordSetting[] {
+    private get userSwapSettings(): UserFacingSwapSetting[] {
         return [
             ...this.newRecords,
             ...this.storedRecords,
@@ -41,15 +41,15 @@ export class SettingTab extends PluginSettingTab {
             )
         ;
 
-        const newSubstitutionsContainer = this.containerEl.createDiv({cls: ["substitutions-list", "new"]});
-        const substitutionsContainer = this.containerEl.createDiv({cls: "substitutions-list"});
+        const newSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "new"]});
+        const swapsContainer = this.containerEl.createDiv({cls: "swap-definition-list"});
 
-        this.storedRecords = (await this.dataStore.getModifiableSubstitutionRecords())
-            .map(sr => new SubstitutionRecordSetting(sr, substitutionsContainer));
+        this.storedRecords = (await this.dataStore.getModifiableSwaps())
+            .map(sr => new UserFacingSwapSetting(sr, swapsContainer));
 
-        registerNewSubstitutionRecordSetting(newSubstitutionsContainer, this.newRecords);
+        addNewUserFacingSwapSetting(newSwapsContainer, this.newRecords);
 
-        for (const recordSetting of this.records) {
+        for (const recordSetting of this.userSwapSettings) {
             recordSetting.display();
         }
 
@@ -60,8 +60,8 @@ export class SettingTab extends PluginSettingTab {
         this.containerEl.empty();
         this.rendered = false;
 
-        return this.dataStore.overwriteSubstitutionRecords(
-            this.records.map(sr => sr.record)
+        return this.dataStore.overwriteDefinedSwaps(
+            this.userSwapSettings.map(sr => sr.swapDef)
         );
     }
 }

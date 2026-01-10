@@ -1,12 +1,12 @@
 import {EditorView} from "@codemirror/view";
 import {Extension, StateField} from "@codemirror/state";
-import {SubstitutionState} from "../../../libraries/types/substitutionState";
+import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 import {defaultState} from "../constants/defaultState";
 import {replaceText} from "../transaction/replaceText";
 import {intoRegexMatch} from "../../../libraries/types/savedata/intoRegexMatch";
 
 export function characterInputHandler(
-    substitutionField: StateField<SubstitutionState>
+    substitutionField: StateField<SubstitutionsState>
 ): Extension {
     /* This has to be an inputHandler for it to be able to replace text */
     return EditorView.inputHandler.of((view, from, to, text, insert) => {

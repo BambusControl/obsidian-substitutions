@@ -62,9 +62,9 @@ describe("escapeSequences", () => {
     });
 
     it("should handle all default substitutions correctly", () => {
-        for (const record of initializationData().substitutions.records) {
-            expect(escapeSequences(record.from)).toBe(record.from);
-            expect(escapeSequences(record.to)).toBe(record.to);
+        for (const swap of initializationData().substitutions.records) {
+            expect(escapeSequences(swap.from)).toBe(swap.from);
+            expect(escapeSequences(swap.to)).toBe(swap.to);
         }
     });
 

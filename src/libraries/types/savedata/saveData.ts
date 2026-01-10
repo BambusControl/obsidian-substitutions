@@ -1,10 +1,10 @@
 import {Initializable} from "./initializable";
-import {SubstitutionsData} from "./substitutionsData";
+import {SwapDefinitionsData} from "./swapDefinitionsData";
 
 export interface SaveData extends Initializable {
     version: SaveDataVersion;
 
-    substitutions: SubstitutionsData;
+    substitutions: SwapDefinitionsData;
 }
 
 /**

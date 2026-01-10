@@ -24,10 +24,17 @@ These are my notes on the development of the plugin.
   - I want to let the users group substitutions which will enable them to enable/disable entire groups at once.
   - My use case: when journaling I use different substitutions than when I'm writing research notes.
 - [ ] regex support: `[regex]`
-  - I want to let users use regex for more advanced patterns.
-  - However, we need to circumvent the `length` of the cache because we will not know how many characters we need to match.
-  - To keep both simple and regex matching, we will prioritize simple search and only then match regex patterns.
   - My use case: Automatic new line after full stop works, however, I want to use regex to trigger substitutions also on other punctuation marks such as "?" or "!".
+  - [x] I want to let users use regex for more advanced patterns.
+  - [x] However, we need to circumvent the `length` of the cache because we will not know how many characters we need to match.
+  - [x] To keep both simple and regex matching, we will prioritize simple search and only then match regex patterns.
+  - [ ] Break up the UI so that Plaintext and Regex definitions are separated
+  - [ ] Verify that the pattern is valid: `\blabla$\i`, the `$` is mandatory to only match at the cursor (end of the string), and the user can add different flags except the `g` flag which is obsolete by functionality
+  - [ ] Add a cheatsheet and documentation link
+    - [RE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions)
+    - [Flags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#advanced_searching_with_flags)
+    - [Cheat Sheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)
+  -
 - [ ] dynamic substituion group activation based on specific files, folders or tags: `[dynamic]`
 - [ ] user re-ordering of saved substitution records: `[reorder]`
 

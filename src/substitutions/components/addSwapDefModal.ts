@@ -1,14 +1,14 @@
 import {App, Modal, Setting} from "obsidian";
-import {SubstitutionsStore} from "../services/substitutionsStore";
-import {SubstitutionRecordSetting} from "./substitutionRecordSetting";
-import {registerNewSubstitutionRecordSetting} from "./registerNewSubstitutionRecordSetting";
+import {UserSwapDefStore} from "../services/userSwapDefStore";
+import {UserFacingSwapSetting} from "./userFacingSwapSetting";
+import {addNewUserFacingSwapSetting} from "./addNewUserFacingSwapSetting";
 
-export class AddSubstitutionModal extends Modal {
-    private readonly newRecords: SubstitutionRecordSetting[] = [];
+export class AddSwapDefModal extends Modal {
+    private readonly newSwaps: UserFacingSwapSetting[] = [];
 
     constructor(
         app: App,
-        private readonly dataStore: SubstitutionsStore,
+        private readonly dataStore: UserSwapDefStore,
         private readonly placeholderValue: string,
     ) {
         super(app);
@@ -27,15 +27,15 @@ export class AddSubstitutionModal extends Modal {
             )
         ;
 
-        const newSubstitutionsContainer = container.createDiv({cls: ["substitutions-list", "new"]});
-        const setting = registerNewSubstitutionRecordSetting(
-            newSubstitutionsContainer,
-            this.newRecords,
+        const newSwapsContainer = container.createDiv({cls: ["swap-definition-list", "new"]});
+        const setting = addNewUserFacingSwapSetting(
+            newSwapsContainer,
+            this.newSwaps,
             {from: this.placeholderValue}
         );
 
-        for (const recordSetting of this.newRecords) {
-            recordSetting.display();
+        for (const newSwap of this.newSwaps) {
+            newSwap.display();
         }
 
         this.setTitle("Add new substitution");
@@ -45,8 +45,8 @@ export class AddSubstitutionModal extends Modal {
     }
 
     override async onClose(): Promise<void> {
-        await this.dataStore.addSubstitutionRecords(
-            this.newRecords.map(sr => sr.record)
+        await this.dataStore.defineNewSwaps(
+            this.newSwaps.map(sr => sr.swapDef)
         );
     }
 }

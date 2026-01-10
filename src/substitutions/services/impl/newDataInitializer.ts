@@ -23,7 +23,7 @@ export class NewDataInitializer implements DataInitializer {
         if (!await this.dataStore.isCurrentVersion()) {
             console.log("Plugin and Data version mismatch, reinitializing");
             await this.dataStore.setInitialized(false);
-            await this.dataStore.setInitializedSubstitutions(false);
+            await this.dataStore.setInitializedSwapDefinitionData(false);
         }
 
         await this.initializeSubstitutions();
@@ -33,7 +33,7 @@ export class NewDataInitializer implements DataInitializer {
     }
 
     private async initializeSubstitutions() {
-        const SubstitutionsInitialized = (await this.dataStore.getSubstitutions()).initialized;
+        const SubstitutionsInitialized = (await this.dataStore.getSwapDefinitionData()).initialized;
 
         if (SubstitutionsInitialized) {
             console.info("Substitutions data already initialized");
@@ -42,7 +42,7 @@ export class NewDataInitializer implements DataInitializer {
 
         console.info("Substitutions initialization");
 
-        await this.dataStore.overwriteSubstitutions({
+        await this.dataStore.overwriteSwapDefinitionData({
             ...initializationData().substitutions,
             initialized: true,
         });
