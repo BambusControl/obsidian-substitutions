@@ -1,6 +1,6 @@
 import {Initializable} from "./initializable";
-import {SubstitutionRecords} from "./substitutionRecords";
+import {SubstitutionRecord} from "./substitutionRecord";
 
 export interface SubstitutionsData extends Initializable {
-    records: SubstitutionRecords;
+    records: SubstitutionRecord[];
 }

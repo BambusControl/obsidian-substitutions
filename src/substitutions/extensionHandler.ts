@@ -1,5 +1,5 @@
 import {Extension} from "@codemirror/state";
-import {SubstitutionRecords} from "../libraries/types/savedata/substitutionRecords";
+import {SubstitutionRecord} from "../libraries/types/savedata/substitutionRecord";
 import {Plugin, Workspace} from "obsidian";
 import {substitution} from "./codemirror/substitution";
 
@@ -7,7 +7,7 @@ export class ExtensionHandler {
 
     static replaceAndUpdate(
         extensions: Extension[],
-        records: SubstitutionRecords,
+        records: SubstitutionRecord[],
         workspace: Workspace
     ) {
         ExtensionHandler.replaceExtensions(extensions, records);
@@ -19,7 +19,7 @@ export class ExtensionHandler {
 
     static replaceAndRegister(
         extensions: Extension[],
-        records: SubstitutionRecords,
+        records: SubstitutionRecord[],
         plugin: Plugin
     ) {
         ExtensionHandler.replaceExtensions(extensions, records);
@@ -31,7 +31,7 @@ export class ExtensionHandler {
 
     private static replaceExtensions(
         extensions: Extension[],
-        records: SubstitutionRecords
+        records: SubstitutionRecord[]
     ) {
         while (extensions.length > 0) {
             extensions.pop();

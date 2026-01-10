@@ -2,11 +2,11 @@ import {StateField} from "@codemirror/state";
 import {SubstitutionState} from "../../../libraries/types/substitutionState";
 import {defaultState} from "../constants/defaultState";
 import {substitutionEffect} from "../constants/substitutionEffect";
-import {SubstitutionRecords} from "../../../libraries/types/savedata/substitutionRecords";
+import {SubstitutionRecord} from "../../../libraries/types/savedata/substitutionRecord";
 import {sliceDoc} from "../../../libraries/helpers/sliceDoc";
 
 export function textSubstitutionField(
-    substitutionRecords: SubstitutionRecords
+    substitutionRecords: SubstitutionRecord[]
 ): StateField<SubstitutionState> {
 
     const potentialMatches = substitutionRecords

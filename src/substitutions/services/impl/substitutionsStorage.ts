@@ -1,8 +1,6 @@
 import {RootDataStore} from "../rootDataStore";
-import {
-    ModifiableSubstitutionRecords,
-    SubstitutionRecords
-} from "../../../libraries/types/savedata/substitutionRecords";
+import {SubstitutionRecord} from "../../../libraries/types/savedata/substitutionRecord";
+import {ModifiableSubstitutionRecord} from "../../../libraries/types/savedata/modifiableSubstitutionRecord";
 import {SubstitutionsStore} from "../substitutionsStore";
 import {recordFilled} from "../../../libraries/helpers/recordFilled";
 import {toModifiable} from "../../../libraries/helpers/toModifiable";
@@ -13,20 +11,20 @@ export class SubstitutionsStorage implements SubstitutionsStore {
 
     constructor(
         private readonly store: RootDataStore,
-        private readonly substitutionsModifiedCallback: (records: SubstitutionRecords) => void
+        private readonly substitutionsModifiedCallback: (records: SubstitutionRecord[]) => void
     ) {
     }
 
-    async getSubstitutionRecords(): Promise<SubstitutionRecords> {
+    async getSubstitutionRecords(): Promise<SubstitutionRecord[]> {
         return (await this.store.getSubstitutions()).records;
     }
 
-    async getModifiableSubstitutionRecords(): Promise<ModifiableSubstitutionRecords> {
+    async getModifiableSubstitutionRecords(): Promise<ModifiableSubstitutionRecord[]> {
         const substitutions = await this.getSubstitutionRecords();
         return substitutions.map(toModifiable);
     }
 
-    async overwriteSubstitutionRecords(modifiedRecords: ModifiableSubstitutionRecords): Promise<void> {
+    async overwriteSubstitutionRecords(modifiedRecords: ModifiableSubstitutionRecord[]): Promise<void> {
         const originalData = await this.store.getSubstitutions();
 
         const filledRecords = new Array(...modifiedRecords.values())
@@ -44,7 +42,7 @@ export class SubstitutionsStorage implements SubstitutionsStore {
         this.substitutionsModifiedCallback(savedSubstitutions.records);
     }
 
-    async addSubstitutionRecords(records: ModifiableSubstitutionRecords): Promise<void> {
+    async addSubstitutionRecords(records: ModifiableSubstitutionRecord[]): Promise<void> {
         const originalData = await this.store.getSubstitutions();
         const originalRecords = originalData.records;
 
