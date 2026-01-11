@@ -1,39 +1,26 @@
-import {SwapDef} from "./swapDef";
+import {RegexSwap} from "./swapDef";
 import {RegexMatch} from "./regexMatch";
+import {createRegex} from "../../helpers/createRegex";
 
-export function intoRegexMatch(text: string, match: SwapDef): null | RegexMatch {
-    const regexInput = match.from;
-
-    // This expression has two parts.
-    // 1. The regex source:  Match every character from the start of the line to
-    //                       just before the final forward slash ('/').
-    // 2. The flags, if any: Match every character after the last slash,
-    //                       to the end of the line.
-    const regexPattern = /^\/(.+)\/([^/]*)$/;
-    const query = regexInput.match(regexPattern);
-
-    if (query == null) {
-        console.error("Invalid regex pattern: " + regexInput);
-        return null;
-        //throw new SubstitutionsError("Invalid regex pattern: " + regexInput)
-    }
-
-    const regExp = new RegExp(query[1], query[2]);
-    const reMatch = regExp.exec(text);
+/**
+ * @see https://github.com/obsidian-tasks-group/obsidian-tasks/blob/39d9f5ad7b6d7c65ae0fa67d5e69bb43bc945d5d/src/Query/Matchers/RegexMatcher.ts
+ */
+export function intoRegexMatch(text: string, match: RegexSwap): null | RegexMatch {
+    const pattern = createRegex(match.source)
+    const reMatch = pattern.exec(text);
 
     if (reMatch == null) {
-        console.error("No match found for regex: " + regexInput);
         return null;
+        // TODO fix error handling
         //throw new SubstitutionsError("No match found for regex: " + regexInput);
     }
 
+    console.info("Regex Match: " + pattern);
     const textToReplace = reMatch[0];
-    const replaceWith = textToReplace.replace(regExp, match.to);
+    const replaceWith = textToReplace.replace(pattern, match.replacement);
 
     return {
-        pattern: regExp,
-        text: text,
-        replaceText: textToReplace,
-        replaceWith: replaceWith
+        source: textToReplace,
+        replacement: replaceWith
     } as RegexMatch;
 }

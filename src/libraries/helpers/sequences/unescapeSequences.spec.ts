@@ -1,5 +1,5 @@
 import {unescapeSequences} from "./unescapeSequences";
-import {initializationData} from "../../data/initializationData";
+import {PLAIN_SWAP_DEFAULTS} from "../../../substitutions/services/swapDefaults";
 
 describe("unescapeSequences", () => {
 
@@ -61,9 +61,9 @@ describe("unescapeSequences", () => {
     });
 
     it("should handle all default substitutions correctly", () => {
-        for (const swap of initializationData().substitutions.records) {
-            expect(unescapeSequences(swap.from)).toBe(swap.from);
-            expect(unescapeSequences(swap.to)).toBe(swap.to);
+        for (const swap of PLAIN_SWAP_DEFAULTS) {
+            expect(unescapeSequences(swap.source)).toBe(swap.source);
+            expect(unescapeSequences(swap.replacement)).toBe(swap.replacement);
         }
     });
 

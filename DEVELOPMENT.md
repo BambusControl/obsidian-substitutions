@@ -28,7 +28,8 @@ These are my notes on the development of the plugin.
   - [x] I want to let users use regex for more advanced patterns.
   - [x] However, we need to circumvent the `length` of the cache because we will not know how many characters we need to match.
   - [x] To keep both simple and regex matching, we will prioritize simple search and only then match regex patterns.
-  - [ ] Break up the UI so that Plaintext and Regex definitions are separated
+  - [x] Break up the UI so that Plaintext and Regex definitions are separated
+  - [ ] Migrate to the save-data format from unicode-search
   - [ ] Verify that the pattern is valid: `\blabla$\i`, the `$` is mandatory to only match at the cursor (end of the string), and the user can add different flags except the `g` flag which is obsolete by functionality
   - [ ] Add a cheatsheet and documentation link
     - [RE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions)

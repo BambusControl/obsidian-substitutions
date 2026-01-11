@@ -1,15 +1,10 @@
-import {SwapDefinitionsData} from "../../libraries/types/savedata/swapDefinitionsData";
+import {MetaFragment} from "../../libraries/types/savedata/metaFragment";
+import {SwapFragment} from "../../libraries/types/savedata/swapFragment";
 
 export interface RootDataStore {
-    isInitialized(): Promise<boolean>;
+    getMeta(): Promise<MetaFragment>
+    overwriteMeta(data: MetaFragment): Promise<MetaFragment>
 
-    setInitialized(value: boolean): Promise<void>;
-
-    isCurrentVersion(): Promise<boolean>;
-
-    getSwapDefinitionData(): Promise<SwapDefinitionsData>;
-
-    overwriteSwapDefinitionData(swapData: SwapDefinitionsData): Promise<SwapDefinitionsData>;
-
-    setInitializedSwapDefinitionData(value: boolean): Promise<void>;
+    getSwap(): Promise<SwapFragment>
+    overwriteSwap(data: SwapFragment): Promise<SwapFragment>
 }

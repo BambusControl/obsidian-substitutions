@@ -1,21 +1,23 @@
-import {ModifiableSwapDef} from "../types/savedata/modifiableSwapDef";
+import {ActionablePlainSwap, ActionableRegexSwap} from "../types/savedata/actionable";
 import {Action} from "../types/savedata/action";
-import {SwapDef} from "../types/savedata/swapDef";
+import {PlainSwap, RegexSwap} from "../types/savedata/swapDef";
 
-export function newModifiableSwapDef(
-    placeholder?: Partial<SwapDef>,
-): ModifiableSwapDef {
+export function newModifiablePlainSwapDef(placeholder?: Partial<PlainSwap>): ActionablePlainSwap {
     return {
-        ...{
-            from: "",
-            to: "",
-            enabled: true,
-            regex: false,
-        },
+        source: "",
+        replacement: "",
+        enabled: true,
         ...placeholder,
-        ...{
-            id: -1,
-            action: Action.Create,
-        }
-    };
+        action: Action.Create,
+    } as ActionablePlainSwap;
+}
+
+export function newModifiableRegexSwapDef(placeholder?: Partial<RegexSwap>): ActionableRegexSwap {
+    return {
+        source: "",
+        replacement: "",
+        enabled: true,
+        ...placeholder,
+        action: Action.Create,
+    } as ActionableRegexSwap;
 }

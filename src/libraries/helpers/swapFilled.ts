@@ -1,7 +1,7 @@
-import {SwapDef} from "../types/savedata/swapDef";
+import {PlainSwap, RegexSwap} from "../types/savedata/swapDef";
 
-export function swapFilled(swap: SwapDef): boolean {
-    return swap.from != ""
-        && swap.to != ""
+export function swapFilled(swap: PlainSwap | RegexSwap): boolean {
+    return swap.source != ""
+        && swap.replacement != ""
         ;
 }

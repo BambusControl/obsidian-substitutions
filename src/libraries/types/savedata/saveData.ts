@@ -1,21 +1,22 @@
-import {Initializable} from "./initializable";
-import {SwapDefinitionsData} from "./swapDefinitionsData";
+import {MetaFragment} from "./metaFragment";
+import {DataFragment} from "./dataFragment";
+import {SwapFragment} from "./swapFragment";
 
-export interface SaveData extends Initializable {
-    version: SaveDataVersion;
-
-    substitutions: SwapDefinitionsData;
+/**
+ * Generic structure of `data.json`
+ */
+export interface SaveDataOf<T> {
+    /**
+     * Metadata information about the save data itself
+     */
+    meta: T;
+    swap: T;
 }
 
 /**
- * Version of the save data schema.
- *
- * Must comply with RegEx:
- * ```^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Z]+)?$```
+ * Structure of `data.json`, where each fragment is a self-managed data fragment
  */
-export type SaveDataVersion
-    = "0.1.0"
-// Update only if save data schema changed
-    ;
-
-export const CURRENT_VERSION: SaveDataVersion = "0.1.0";
+export interface SaveData extends SaveDataOf<DataFragment> {
+    meta: MetaFragment;
+    swap: SwapFragment;
+}

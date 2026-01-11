@@ -1,8 +1,9 @@
 import {TextReplacement} from "./textReplacement";
-import {SwapDef} from "./savedata/swapDef";
+import {PlainSwap, RegexSwap} from "./savedata/swapDef";
 
 export interface SubstitutionsState {
     cache: string,
-    readonly matches: SwapDef[],
+    readonly plainSwaps: PlainSwap[],
+    readonly regexSwaps: RegexSwap[],
     replacement: TextReplacement | null,
 }

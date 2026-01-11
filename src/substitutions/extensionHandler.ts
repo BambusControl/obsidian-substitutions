@@ -1,5 +1,5 @@
 import {Extension} from "@codemirror/state";
-import {SwapDef} from "../libraries/types/savedata/swapDef";
+import {PlainSwap, RegexSwap} from "../libraries/types/savedata/swapDef";
 import {Plugin, Workspace} from "obsidian";
 import {substitutionsExtension} from "./codemirror/substitutionsExtension";
 
@@ -7,10 +7,11 @@ export class ExtensionHandler {
 
     static replaceAndUpdate(
         extensions: Extension[],
-        swapDefinitions: SwapDef[],
-        workspace: Workspace
+        plainSwaps: PlainSwap[],
+        regexSwaps: RegexSwap[],
+        workspace: Workspace,
     ) {
-        ExtensionHandler.replaceExtensions(extensions, swapDefinitions);
+        ExtensionHandler.replaceExtensions(extensions, plainSwaps, regexSwaps);
 
         console.info("Reloading CodeMirror extensions");
 
@@ -19,10 +20,11 @@ export class ExtensionHandler {
 
     static replaceAndRegister(
         extensions: Extension[],
-        records: SwapDef[],
+        plainSwaps: PlainSwap[],
+        regexSwaps: RegexSwap[],
         plugin: Plugin
     ) {
-        ExtensionHandler.replaceExtensions(extensions, records);
+        ExtensionHandler.replaceExtensions(extensions, plainSwaps, regexSwaps);
 
         console.info("Registering CodeMirror extensions");
 
@@ -31,12 +33,13 @@ export class ExtensionHandler {
 
     private static replaceExtensions(
         extensions: Extension[],
-        swapDefinitions: SwapDef[]
+        plainSwaps: PlainSwap[],
+        regexSwaps: RegexSwap[],
     ) {
         while (extensions.length > 0) {
             extensions.pop();
         }
 
-        extensions.push(substitutionsExtension(swapDefinitions));
+        extensions.push(substitutionsExtension(plainSwaps, regexSwaps));
     }
 }

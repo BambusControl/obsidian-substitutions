@@ -4,6 +4,7 @@ import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 import {defaultState} from "../constants/defaultState";
 import {replaceText} from "../transaction/replaceText";
 import {intoRegexMatch} from "../../../libraries/types/savedata/intoRegexMatch";
+import {RegexMatch} from "../../../libraries/types/savedata/regexMatch";
 
 export function characterInputHandler(
     substitutionField: StateField<SubstitutionsState>
@@ -34,13 +35,17 @@ export function characterInputHandler(
         const targetString = (field.cache + text)
 
 
-        const literalMatch = field.matches
-            .find(m => !m.regex && targetString.endsWith(m.from));
+        const literalMatch = field.plainSwaps
+            .find(m => targetString.endsWith(m.source));
 
-        const regexMatch = field.matches
-            .filter(m => m.regex)
-            .map(m => intoRegexMatch(targetString, m))
-            .find(m => m != null);
+        var regexMatch: RegexMatch | null | undefined = null;
+
+        if (literalMatch == null) {
+            /* Plain matches take precedence over regex matches */
+            regexMatch = field.regexSwaps
+                .map(m => intoRegexMatch(targetString, m))
+                .find(m => m != null);
+        }
 
         console.log({
             targetString,
@@ -53,8 +58,8 @@ export function characterInputHandler(
         }
 
         /* One of these must be non-null */
-        const replaceFrom = (literalMatch?.from ?? regexMatch?.replaceText)!;
-        const replaceTo = (literalMatch?.to ?? regexMatch?.replaceWith)!;
+        const replaceFrom = (literalMatch?.source ?? regexMatch?.source)!;
+        const replaceTo = (literalMatch?.replacement ?? regexMatch?.replacement)!;
 
         // Run the default behaviour before we do anything to update the state
         view.dispatch(insert());

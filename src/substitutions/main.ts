@@ -1,12 +1,14 @@
 import {App, Plugin, PluginManifest} from "obsidian";
 import {SettingTab} from "./components/settingTab";
-import {RootPluginDataStorage} from "./services/impl/rootPluginDataStorage";
-import {NewDataInitializer} from "./services/impl/newDataInitializer";
-
-import {UserSwapDefStorage} from "./services/impl/userSwapDefStorage";
 import {Extension} from "@codemirror/state";
 import {ExtensionHandler} from "./extensionHandler";
 import {AddSwapDefModal} from "./components/addSwapDefModal";
+import {MetaDataManager} from "./services/metaDataManager";
+import {SwapDataManager} from "./services/swapDataManager";
+import {RootDataManager} from "./services/rootDataManager";
+import {PersistCache} from "../libraries/types/persistCache";
+import {RootPluginDataStorage} from "./services/rootPluginDataStorage";
+import {UserSwapStorage} from "./services/userSwapStorage";
 
 /* Used by Obsidian */
 // noinspection JSUnusedGlobalSymbols
@@ -27,31 +29,45 @@ export default class SubstitutionsPlugin extends Plugin {
 
         console.info("Creating services");
 
-        const dataStore = new RootPluginDataStorage(this);
-        const initializer = new NewDataInitializer(dataStore);
+        const dataLoader = new PersistCache(
+            () => this.loadData(),
+            (data) => this.saveData(data)
+        );
 
-        const userSwapStorage = new UserSwapDefStorage(
+        const dataStore = new RootPluginDataStorage(dataLoader);
+        const plainSwapStorage = new UserSwapStorage(
             dataStore,
             (swaps) => ExtensionHandler.replaceAndUpdate(
                 this.extensions,
-                swaps,
+                swaps.plain,
+                swaps.regex,
                 this.app.workspace
             )
         );
 
-        await initializer.initializeData();
+        const metaDm = new MetaDataManager();
+        const swapDm = new SwapDataManager();
+
+        const dataManager = new RootDataManager(
+            dataLoader,
+            metaDm,
+            swapDm,
+        );
+
+        await dataManager.initializeData();
 
         console.info("Adding editor extension");
 
-        const currentSwaps = await userSwapStorage.getDefinedSwaps();
-        ExtensionHandler.replaceAndRegister(this.extensions, currentSwaps, this);
+        const currentPlainSwaps = await plainSwapStorage.getPlainSwaps();
+        const currentRegexSwaps = await plainSwapStorage.getRegexSwaps();
+        ExtensionHandler.replaceAndRegister(this.extensions, currentPlainSwaps, currentRegexSwaps, this);
 
         console.info("Adding UI elements");
 
         this.addSettingTab(new SettingTab(
             this.app,
             this,
-            userSwapStorage,
+            plainSwapStorage,
         ));
 
         this.addCommand({
@@ -60,7 +76,7 @@ export default class SubstitutionsPlugin extends Plugin {
             editorCallback: (editor, _) => {
                 new AddSwapDefModal(
                     this.app,
-                    userSwapStorage,
+                    plainSwapStorage,
                     editor.getSelection()
                 ).open();
             },

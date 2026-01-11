@@ -1,26 +1,37 @@
 import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
-import {UserSwapDefStore} from "../services/userSwapDefStore";
-import {UserFacingSwapSetting} from "./userFacingSwapSetting";
-import {addNewUserFacingSwapSetting} from "./addNewUserFacingSwapSetting";
+import {UserSwapStorage} from "../services/userSwapStorage";
+import {UserFacingPlainSwapSetting} from "./userFacingPlainSwapSetting";
+import {addNewUserFacingPlainSwapSetting, addNewUserFacingRegexSwapSetting} from "./addNewUserFacingPlainSwapSetting";
+import {toActionablePlain, toActionableRegex} from "../../libraries/helpers/toActionable";
+import {UserFacingRegexSwapSetting} from "./userFacingRegexSwapSetting";
 
 export class SettingTab extends PluginSettingTab {
 
     private rendered = false;
-    private storedRecords: UserFacingSwapSetting[] = [];
-    private readonly newRecords: UserFacingSwapSetting[] = [];
+    private storedPlain: UserFacingPlainSwapSetting[] = [];
+    private readonly newPlain: UserFacingPlainSwapSetting[] = [];
+    private storedRegex: UserFacingRegexSwapSetting[] = [];
+    private readonly newRegex: UserFacingRegexSwapSetting[] = [];
 
     constructor(
         app: App,
         plugin: Plugin,
-        private readonly dataStore: UserSwapDefStore,
+        private readonly userSwap: UserSwapStorage,
     ) {
         super(app, plugin);
     }
 
-    private get userSwapSettings(): UserFacingSwapSetting[] {
+    private get userPlainSwapSettings(): UserFacingPlainSwapSetting[] {
         return [
-            ...this.newRecords,
-            ...this.storedRecords,
+            ...this.newPlain,
+            ...this.storedPlain,
+        ];
+    }
+
+    private get userRegexSwapSettings(): UserFacingRegexSwapSetting[] {
+        return [
+            ...this.newRegex,
+            ...this.storedRegex,
         ];
     }
 
@@ -41,16 +52,45 @@ export class SettingTab extends PluginSettingTab {
             )
         ;
 
-        const newSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "new"]});
-        const swapsContainer = this.containerEl.createDiv({cls: "swap-definition-list"});
 
-        this.storedRecords = (await this.dataStore.getModifiableSwaps())
-            .map(sr => new UserFacingSwapSetting(sr, swapsContainer));
+        /* Plain Swaps */
+        const plainSwapHadingContainer = this.containerEl.createDiv({cls: "heading"});
+        new Setting(plainSwapHadingContainer)
+            .setHeading()
+            .setName("Plain Text Substitutions")
+        ;
 
-        addNewUserFacingSwapSetting(newSwapsContainer, this.newRecords);
+        const newPlainSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "plain", "new"]});
+        const plainSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "plain"]});
 
-        for (const recordSetting of this.userSwapSettings) {
-            recordSetting.display();
+        this.storedPlain = (await this.userSwap.getPlainSwaps())
+            .map(toActionablePlain)
+            .map(swap => new UserFacingPlainSwapSetting(swap, plainSwapsContainer));
+
+        addNewUserFacingPlainSwapSetting(newPlainSwapsContainer, this.newPlain);
+
+        for (const plainSwap of this.userPlainSwapSettings) {
+            plainSwap.display();
+        }
+
+        /* Regex Swaps */
+        const regexSwapHadingContainer = this.containerEl.createDiv({cls: "heading"});
+        new Setting(regexSwapHadingContainer)
+            .setHeading()
+            .setName("Regular Expression Substitutions")
+        ;
+
+        const newRegexSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "regex", "new"]});
+        const regexSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "regex"]});
+
+        this.storedRegex = (await this.userSwap.getRegexSwaps())
+            .map(toActionableRegex)
+            .map(swap => new UserFacingRegexSwapSetting(swap, regexSwapsContainer));
+
+        addNewUserFacingRegexSwapSetting(newRegexSwapsContainer, this.newRegex);
+
+        for (const regexSwap of this.userRegexSwapSettings) {
+            regexSwap.display();
         }
 
         this.rendered = true;
@@ -60,8 +100,9 @@ export class SettingTab extends PluginSettingTab {
         this.containerEl.empty();
         this.rendered = false;
 
-        return this.dataStore.overwriteDefinedSwaps(
-            this.userSwapSettings.map(sr => sr.swapDef)
+        return this.userSwap.overwriteDefinedSwaps(
+            this.userPlainSwapSettings.map(swap => swap.swapDef),
+            this.userRegexSwapSettings.map(swap => swap.swapDef),
         );
     }
 }

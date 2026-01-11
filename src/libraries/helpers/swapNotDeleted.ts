@@ -1,6 +1,6 @@
-import {ModifiableSwapDef} from "../types/savedata/modifiableSwapDef";
+import {Actionable} from "../types/savedata/actionable";
 import {Action} from "../types/savedata/action";
 
-export function swapNotDeleted(swap: ModifiableSwapDef): boolean {
+export function swapNotDeleted(swap: Actionable): boolean {
     return swap.action != Action.Delete;
 }

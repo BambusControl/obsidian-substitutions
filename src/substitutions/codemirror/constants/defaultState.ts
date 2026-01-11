@@ -9,6 +9,7 @@ export function defaultState(value?: Partial<SubstitutionsState>): Substitutions
 
 const DEFAULTS: SubstitutionsState = {
     cache: "",
-    matches: [],
+    plainSwaps: [],
+    regexSwaps: [],
     replacement: null,
 };

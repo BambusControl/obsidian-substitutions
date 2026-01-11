@@ -1,4 +1,4 @@
-import {ModifiableSwapDef} from "../../libraries/types/savedata/modifiableSwapDef";
+import {ActionablePlainSwap} from "../../libraries/types/savedata/actionable";
 import {Setting, TextComponent} from "obsidian";
 import {MaybePromise} from "../../libraries/types/maybePromise";
 import {swapFilled} from "../../libraries/helpers/swapFilled";
@@ -6,22 +6,22 @@ import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
 import {unescapeSequences} from "../../libraries/helpers/sequences/unescapeSequences";
 import {escapeSequences} from "../../libraries/helpers/sequences/escapeSequences";
 import {Action} from "../../libraries/types/savedata/action";
-import {getRegexToggleTooltip, getSwapToggleTooltip} from "../../libraries/helpers/getTooltips";
+import {getSwapToggleTooltip} from "../../libraries/helpers/getTooltips";
 
-export class UserFacingSwapSetting {
+export class UserFacingPlainSwapSetting {
     public fromInput?: TextComponent;
     public toInput?: TextComponent;
     private setting: Setting | null = null;
 
     constructor(
-        private readonly _modSwapDef: ModifiableSwapDef,
+        private readonly _modSwapDef: ActionablePlainSwap,
         private readonly _container: HTMLElement,
         private readonly _onFill: () => MaybePromise<void> = () => {
         },
     ) {
     }
 
-    get swapDef(): ModifiableSwapDef {
+    get swapDef(): ActionablePlainSwap {
         return this._modSwapDef;
     }
 
@@ -56,9 +56,9 @@ export class UserFacingSwapSetting {
                     .onChange((input) => {
                         console.info("Changing from", input);
                         /* Don't unescape the input, it is always sanitized */
-                        modSwapDef.from = input;
+                        modSwapDef.source = input;
                     })
-                    .setValue(modSwapDef.from);
+                    .setValue(modSwapDef.source.toString());
                 this.fromInput = textInput;
             })
             .addExtraButton((button) => {
@@ -66,11 +66,11 @@ export class UserFacingSwapSetting {
                     .setIcon("arrow-left-right")
                     .setTooltip("Swap from and to")
                     .onClick(() => {
-                        const new_from = "" + modSwapDef.to;
-                        const new_to = "" + modSwapDef.from;
+                        const new_from = "" + modSwapDef.replacement;
+                        const new_to = "" + modSwapDef.source;
 
-                        modSwapDef.from = new_from;
-                        modSwapDef.to = new_to;
+                        modSwapDef.source = new_from;
+                        modSwapDef.replacement = new_to;
 
                         this.fromInput?.setValue(new_from);
                         this.toInput?.setValue(new_to);
@@ -83,24 +83,15 @@ export class UserFacingSwapSetting {
                     .setPlaceholder("with this")
                     .onChange(async (input) => {
                         console.info("Changing to", input);
-                        modSwapDef.to = unescapeSequences(input);
-                        if (checkJustFilled(setting, modSwapDef.to)) {
+                        modSwapDef.replacement = unescapeSequences(input);
+                        if (checkJustFilled(setting, modSwapDef.replacement)) {
                             setting.setClass("just-filled");
                             await this._onFill();
                         }
 
                     })
-                    .setValue(escapeSequences(modSwapDef.to));
+                    .setValue(escapeSequences(modSwapDef.replacement));
                 this.toInput = textInput;
-            })
-            .addToggle((toggleInput) => {
-                toggleInput
-                    .setTooltip(getRegexToggleTooltip(toggleInput.getValue()))
-                    .setValue(modSwapDef.regex)
-                    .onChange((value) => {
-                        modSwapDef.regex = value;
-                        toggleInput.setTooltip(getRegexToggleTooltip(value));
-                    });
             })
             .addExtraButton((button) => {
                 button
