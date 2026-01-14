@@ -29,14 +29,14 @@ These are my notes on the development of the plugin.
   - [x] However, we need to circumvent the `length` of the cache because we will not know how many characters we need to match.
   - [x] To keep both simple and regex matching, we will prioritize simple search and only then match regex patterns.
   - [x] Break up the UI so that Plaintext and Regex definitions are separated
-  - [ ] Migrate to the save-data format from unicode-search
+  - [x] Migrate to the save-data format from unicode-search
   - [ ] Verify that the pattern is valid: `\blabla$\i`, the `$` is mandatory to only match at the cursor (end of the string), and the user can add different flags except the `g` flag which is obsolete by functionality
   - [ ] Add a cheatsheet and documentation link
     - [RE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions)
     - [Flags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#advanced_searching_with_flags)
     - [Cheat Sheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)
-  -
-- [ ] dynamic substituion group activation based on specific files, folders or tags: `[dynamic]`
-- [ ] user re-ordering of saved substitution records: `[reorder]`
+- [ ] dynamic swap group activation based on specific files, folders or tags: `[dynamic]`
+- [ ] user re-ordering of saved swap: `[reorder]`
+- [ ] add an "undo" option when removing swaps: `[undo]`
 
 ## Development Diary

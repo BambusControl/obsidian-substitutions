@@ -1,22 +1,22 @@
 import {MetaFragment} from "./metaFragment";
 import {DataFragment} from "./dataFragment";
-import {SwapFragment} from "./swapFragment";
+import {UserSwapFragment} from "./userSwapFragment";
 
 /**
  * Generic structure of `data.json`
  */
-export interface SaveDataOf<T> {
+export interface GenericSaveData {
     /**
      * Metadata information about the save data itself
      */
-    meta: T;
-    swap: T;
+    meta: DataFragment;
+    swap: DataFragment;
 }
 
 /**
  * Structure of `data.json`, where each fragment is a self-managed data fragment
  */
-export interface SaveData extends SaveDataOf<DataFragment> {
+export interface SaveData {
     meta: MetaFragment;
-    swap: SwapFragment;
+    swap: UserSwapFragment;
 }

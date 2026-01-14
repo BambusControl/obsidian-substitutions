@@ -1,12 +1,13 @@
 import {Extension} from "@codemirror/state";
 import {characterInputHandler} from "./extension/characterInputHandler";
-import {PlainSwap, RegexSwap} from "../../libraries/types/savedata/swapDef";
 import {backwardDeleteHandler} from "./extension/backwardDeleteHandler";
 import {textSubstitutionsField} from "./extension/textSubstitutionsField";
 import {stateUpdater} from "./extension/stateUpdater";
+import {SavedSwapDefinition} from "../../libraries/types/savedata/savedSwapDefinition";
 
-export function substitutionsExtension(plainSwaps: PlainSwap[], regexSwaps: RegexSwap[]): Extension {
-    const textSubstitutions = textSubstitutionsField(plainSwaps, regexSwaps);
+export function substitutionsExtension(savedSwaps: SavedSwapDefinition[]): Extension {
+    const enabledSwaps = savedSwaps.filter(swap => swap.enabled).sort((a, b) => a.id - b.id);
+    const textSubstitutions = textSubstitutionsField(enabledSwaps);
 
     return [
         textSubstitutions,

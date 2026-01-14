@@ -1,16 +1,10 @@
-import {PlainSwap, RegexSwap} from "../types/savedata/swapDef";
-import {ActionablePlainSwap, ActionableRegexSwap, ActionableSwap} from "../types/savedata/actionable";
+import {ActionableSwap} from "../types/savedata/actionable";
+import {SavedSwapDefinition} from "../types/savedata/savedSwapDefinition";
 
-export function removeActionPlain(value: ActionablePlainSwap): PlainSwap {
+export function removeAction(value: ActionableSwap): SavedSwapDefinition {
     return {
-        source: value.source,
-        replacement: value.replacement,
-        enabled: value.enabled,
-    };
-}
-
-export function removeActionRegex(value: ActionableRegexSwap): RegexSwap {
-    return {
+        id: value.id,
+        kind: value.kind,
         source: value.source,
         replacement: value.replacement,
         enabled: value.enabled,

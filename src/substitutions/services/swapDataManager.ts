@@ -1,14 +1,15 @@
 import {DataFragmentManager} from "./dataFragmentManager";
 import {CURRENT_DATA_VERSION} from "../../libraries/types/savedata/version";
-import {SwapFragment} from "../../libraries/types/savedata/swapFragment";
+import {UserSwapFragment} from "../../libraries/types/savedata/userSwapFragment";
 import {DataEvent} from "../../libraries/types/savedata/metaFragment";
 import {DataFragment} from "../../libraries/types/savedata/dataFragment";
-import {PLAIN_SWAP_DEFAULTS, REGEX_SWAP_DEFAULTS} from "./swapDefaults";
-import {isPlainSwap, isRegexSwap} from "../../libraries/types/savedata/swapDef";
+import {SWAP_DEFAULTS} from "./swapDefaults";
 
-export class SwapDataManager implements DataFragmentManager<SwapFragment> {
+import {isSwapDefinition} from "../../libraries/types/savedata/savedSwapDefinition";
 
-    initData(fragment: DataFragment): SwapFragment {
+export class SwapDataManager implements DataFragmentManager<UserSwapFragment> {
+
+    initData(fragment: DataFragment): UserSwapFragment {
         if (fragment.initialized && isSavedSwap(fragment)) {
             return fragment;
         }
@@ -19,24 +20,20 @@ export class SwapDataManager implements DataFragmentManager<SwapFragment> {
             ...fragment,
             initialized: true,
             version: CURRENT_DATA_VERSION,
-            plain: PLAIN_SWAP_DEFAULTS,
-            regex: REGEX_SWAP_DEFAULTS,
+            definitions: SWAP_DEFAULTS,
         }
     }
 
-    async updateData(fragment: SwapFragment, _: Set<DataEvent>): Promise<SwapFragment> {
+    async updateData(fragment: UserSwapFragment, _: Set<DataEvent>): Promise<UserSwapFragment> {
         /* No-op yet */
         return fragment;
     }
 
 }
 
-function isSavedSwap(object: DataFragment): object is SwapFragment {
-    return "plain" in object
-        && "regex" in object
-        && Array.isArray(object.plain)
-        && Array.isArray(object.regex)
-        && object.plain.every(s => isPlainSwap(s))
-        && object.regex.every(s => isRegexSwap(s))
+function isSavedSwap(object: DataFragment): object is UserSwapFragment {
+    return "definitions" in object
+        && Array.isArray(object.definitions)
+        && object.definitions.every(s => isSwapDefinition(s))
     ;
 }

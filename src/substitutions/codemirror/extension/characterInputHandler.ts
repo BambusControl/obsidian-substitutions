@@ -3,8 +3,7 @@ import {Extension, StateField} from "@codemirror/state";
 import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 import {defaultState} from "../constants/defaultState";
 import {replaceText} from "../transaction/replaceText";
-import {intoRegexMatch} from "../../../libraries/types/savedata/intoRegexMatch";
-import {RegexMatch} from "../../../libraries/types/savedata/regexMatch";
+import {matchSwapToText} from "./matchSwapToText";
 
 export function characterInputHandler(
     substitutionField: StateField<SubstitutionsState>
@@ -22,7 +21,6 @@ export function characterInputHandler(
         const primarySelection = view.state.selection.main;
         const multipleChars = text.length !== 1;
         const selectionMatch = from === primarySelection.from && to === primarySelection.to;
-
         if (multipleChars || !selectionMatch) {
             return false;
         }
@@ -33,39 +31,19 @@ export function characterInputHandler(
         */
         const field = view.state.field(substitutionField, false) ?? defaultState();
         const targetString = (field.cache + text)
+        const match = field.swaps
+            .map(swap => matchSwapToText(targetString, swap))
+            .find(m => m != null);
 
-
-        const literalMatch = field.plainSwaps
-            .find(m => targetString.endsWith(m.source));
-
-        var regexMatch: RegexMatch | null | undefined = null;
-
-        if (literalMatch == null) {
-            /* Plain matches take precedence over regex matches */
-            regexMatch = field.regexSwaps
-                .map(m => intoRegexMatch(targetString, m))
-                .find(m => m != null);
-        }
-
-        console.log({
-            targetString,
-            literalMatch,
-            regexMatch
-        });
-
-        if (literalMatch == null && regexMatch == null) {
+        if (match == null) {
             return false;
         }
-
-        /* One of these must be non-null */
-        const replaceFrom = (literalMatch?.source ?? regexMatch?.source)!;
-        const replaceTo = (literalMatch?.replacement ?? regexMatch?.replacement)!;
 
         // Run the default behaviour before we do anything to update the state
         view.dispatch(insert());
 
         /* The recording of the typed character is already handled in the stateUpdater */
-        const transaction = replaceText(view.state, replaceFrom, replaceTo);
+        const transaction = replaceText(view.state, match.from, match.to);
         view.dispatch(transaction);
 
         return true;

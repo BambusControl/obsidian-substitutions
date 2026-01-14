@@ -1,5 +1,5 @@
 export enum Action {
-    None,
+    Modify,
     Create,
     Delete,
 }

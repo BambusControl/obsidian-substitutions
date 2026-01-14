@@ -1,5 +1,5 @@
-import {escapeSequences} from "./escapeSequences";
-import {PLAIN_SWAP_DEFAULTS} from "../../../substitutions/services/swapDefaults";
+import { escapeSequences } from "./escapeSequences";
+import { SWAP_DEFAULTS } from "../../../substitutions/services/swapDefaults";
 
 describe("escapeSequences", () => {
 
@@ -62,7 +62,7 @@ describe("escapeSequences", () => {
     });
 
     it("should handle all default substitutions correctly", () => {
-        for (const swap of PLAIN_SWAP_DEFAULTS) {
+        for (const swap of SWAP_DEFAULTS) {
             expect(escapeSequences(swap.source)).toBe(swap.source);
             expect(escapeSequences(swap.replacement)).toBe(swap.replacement);
         }

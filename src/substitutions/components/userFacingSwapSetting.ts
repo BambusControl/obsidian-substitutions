@@ -1,4 +1,4 @@
-import {ActionablePlainSwap} from "../../libraries/types/savedata/actionable";
+import {ActionableSwap} from "../../libraries/types/savedata/actionable";
 import {Setting, TextComponent} from "obsidian";
 import {MaybePromise} from "../../libraries/types/maybePromise";
 import {swapFilled} from "../../libraries/helpers/swapFilled";
@@ -6,22 +6,20 @@ import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
 import {unescapeSequences} from "../../libraries/helpers/sequences/unescapeSequences";
 import {escapeSequences} from "../../libraries/helpers/sequences/escapeSequences";
 import {Action} from "../../libraries/types/savedata/action";
-import {getSwapToggleTooltip} from "../../libraries/helpers/getTooltips";
 
-export class UserFacingPlainSwapSetting {
+export class UserFacingSwapSetting {
     public fromInput?: TextComponent;
     public toInput?: TextComponent;
     private setting: Setting | null = null;
 
     constructor(
-        private readonly _modSwapDef: ActionablePlainSwap,
+        private readonly _modSwapDef: ActionableSwap,
         private readonly _container: HTMLElement,
-        private readonly _onFill: () => MaybePromise<void> = () => {
-        },
+        private readonly _onFill: () => MaybePromise<void> = () => {},
     ) {
     }
 
-    get swapDef(): ActionablePlainSwap {
+    get swapDef(): ActionableSwap {
         return this._modSwapDef;
     }
 
@@ -41,11 +39,10 @@ export class UserFacingPlainSwapSetting {
         setting
             .addToggle((toggleInput) => {
                 toggleInput
-                    .setTooltip(getSwapToggleTooltip(toggleInput.getValue()))
+                    .setTooltip("Enable/Disable this substitution")
                     .setValue(modSwapDef.enabled)
                     .onChange((value) => {
                         modSwapDef.enabled = value;
-                        toggleInput.setTooltip(getSwapToggleTooltip(value));
                     });
 
                 toggleInput.toggleEl.addClass("hide-if-empty");
@@ -92,6 +89,19 @@ export class UserFacingPlainSwapSetting {
                     })
                     .setValue(escapeSequences(modSwapDef.replacement));
                 this.toInput = textInput;
+            })
+            .addExtraButton((button) => {
+                button
+                    .setIcon("regex")
+                    .setTooltip("Use Regular Expressions")
+                    .onClick(() => {
+                        modSwapDef.kind = modSwapDef.kind == "plain" ? "regex" : "plain";
+                        button.extraSettingsEl.toggleClass("is-active", modSwapDef.kind == "regex");
+                        setting.controlEl.toggleClass("regex-enabled", modSwapDef.kind == "regex");
+                    });
+
+                button.extraSettingsEl.toggleClass("is-active", modSwapDef.kind == "regex");
+                setting.controlEl.toggleClass("regex-enabled", modSwapDef.kind == "regex");
             })
             .addExtraButton((button) => {
                 button

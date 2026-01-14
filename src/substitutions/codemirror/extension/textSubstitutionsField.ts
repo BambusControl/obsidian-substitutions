@@ -2,23 +2,14 @@ import {StateField} from "@codemirror/state";
 import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 import {defaultState} from "../constants/defaultState";
 import {effects} from "../constants/Effects";
-import {PlainSwap, RegexSwap} from "../../../libraries/types/savedata/swapDef";
 import {sliceDoc} from "../../../libraries/helpers/sliceDoc";
+import {TextSwap} from "../../../libraries/types/savedata/textSwap";
 
 export function textSubstitutionsField(
-    plainSwaps: PlainSwap[],
-    regexSwaps: RegexSwap[],
+    swaps: TextSwap[],
 ): StateField<SubstitutionsState> {
-
-    const potentialPlainMatches = plainSwaps
-        .filter(swap => swap.enabled);
-
-    const potentialRegexMatches = regexSwaps
-        .filter(swap => swap.enabled);
-
     const newDefaultState = (value?: Partial<SubstitutionsState> | undefined) => defaultState({
-        plainSwaps: potentialPlainMatches,
-        regexSwaps: potentialRegexMatches,
+        swaps: swaps,
         ...value
     });
 

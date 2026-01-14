@@ -4,7 +4,7 @@ import {effects} from "../constants/Effects";
 import {defaultState} from "../constants/defaultState";
 import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 import {replaceText} from "../transaction/replaceText";
-import {TextReplacement} from "../../../libraries/types/textReplacement";
+import {EditorTextReplacement} from "../../../libraries/types/textReplacement";
 
 export function backwardDeleteHandler(
     substitutionsField: StateField<SubstitutionsState>
@@ -30,7 +30,7 @@ export function backwardDeleteHandler(
     });
 }
 
-function revertReplacement(state: EditorState, replacement: TextReplacement): TransactionSpec[] {
+function revertReplacement(state: EditorState, replacement: EditorTextReplacement): TransactionSpec[] {
     /* We could revert of any saved substitution record
      * if we detect revert matches the same way as forward matches.
      * (check the target string with "to" instead of "from")

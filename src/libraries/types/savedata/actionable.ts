@@ -1,10 +1,7 @@
 import {Action} from "./action";
-import {PlainSwap, RegexSwap} from "./swapDef";
 
-export interface Actionable {
+import {SavedSwapDefinition} from "./savedSwapDefinition";
+
+export interface ActionableSwap extends SavedSwapDefinition {
     action: Action;
 }
-
-export type ActionableSwap = Actionable & (PlainSwap | RegexSwap);
-export type ActionablePlainSwap = Actionable & PlainSwap;
-export type ActionableRegexSwap = Actionable & RegexSwap;

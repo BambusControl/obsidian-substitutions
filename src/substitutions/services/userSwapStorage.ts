@@ -1,85 +1,66 @@
-import {PlainSwap, RegexSwap} from "../../libraries/types/savedata/swapDef";
-import {RootDataStore} from "./rootDataStore";
-import {ActionablePlainSwap, ActionableRegexSwap} from "../../libraries/types/savedata/actionable";
+import {ActionableSwap} from "../../libraries/types/savedata/actionable";
 import {swapFilled} from "../../libraries/helpers/swapFilled";
-import {swapNotDeleted} from "../../libraries/helpers/swapNotDeleted";
-import {SwapFragment} from "../../libraries/types/savedata/swapFragment";
-import {removeActionPlain, removeActionRegex} from "../../libraries/helpers/removeAction";
+import {UserSwapFragment} from "../../libraries/types/savedata/userSwapFragment";
+import {removeAction} from "../../libraries/helpers/removeAction";
+import {SavedSwapDefinition} from "../../libraries/types/savedata/savedSwapDefinition";
+import {RootPluginDataStorage} from "./rootPluginDataStorage";
+import {Action} from "src/libraries/types/savedata/action";
+import {reindexSwaps} from "../../libraries/helpers/reindexSwaps";
 
 export class UserSwapStorage {
 
     constructor(
-        private readonly store: RootDataStore,
-        private readonly modifiedCallback: (swaps: SwapFragment) => void
+        private readonly store: RootPluginDataStorage,
+        private readonly modifiedCallback: (swaps: UserSwapFragment) => void
     ) {
     }
 
-    async getPlainSwaps(): Promise<PlainSwap[]> {
-        return (await this.store.getSwap()).plain;
+    async getSwaps(): Promise<SavedSwapDefinition[]> {
+        return (await this.store.getSwap()).definitions;
     }
 
-    async getRegexSwaps(): Promise<RegexSwap[]> {
-        return (await this.store.getSwap()).regex;
-    }
-
-
-    async overwriteDefinedSwaps(
-        modifiedPlainSwaps: ActionablePlainSwap[],
-        modifiedRegexSwaps: ActionableRegexSwap[]
-    ): Promise<void> {
+    async overwriteDefinedSwaps(allSwaps: ActionableSwap[]): Promise<void> {
         const originalData = await this.store.getSwap();
 
-        const filledPlainSwaps = new Array(...modifiedPlainSwaps.values())
-            .filter(swapFilled);
-        const filledRegexSwaps = new Array(...modifiedRegexSwaps.values())
-            .filter(swapFilled);
+        const filledSwaps = new Array(...allSwaps.values()).filter(swapFilled);
+        const modifiedSwaps = filledSwaps.filter(swap => swap.action === Action.Modify);
+        const newSwaps = filledSwaps.filter(swap => swap.action === Action.Create);
 
-        const plainSwaps = filledPlainSwaps
-            .filter(swapNotDeleted)
-            .map(removeActionPlain);
-        const regexSwaps = filledRegexSwaps
-            .filter(swapNotDeleted)
-            .map(removeActionRegex);
+        console.log("Modified swaps", modifiedSwaps);
+        console.log("New swaps", newSwaps);
+        console.log("Original swaps", originalData.definitions);
+
+        const definitions = [
+            ...modifiedSwaps,
+            ...newSwaps,
+        ].map(removeAction);
 
         const savedData = await this.store.overwriteSwap({
             ...originalData,
-            plain: plainSwaps,
-            regex: regexSwaps,
+            definitions: reindexSwaps(definitions),
         });
 
         this.modifiedCallback(savedData);
     }
 
-    async defineNewSwaps(
-        newPlainSwaps: ActionablePlainSwap[],
-        newRegexSwaps: ActionableRegexSwap[],
-    ): Promise<void> {
+    async defineNewSwaps(newSwaps: ActionableSwap[]): Promise<void> {
         const originalData = await this.store.getSwap();
-        const ogPlainSwaps = originalData.plain;
-        const ogRegexSwaps = originalData.regex;
+        const ogSwaps = originalData.definitions;
 
-        const filledPlainDefinitions = new Array(...newPlainSwaps.values())
-            .filter(swapFilled);
-        const filledRegexDefinitions = new Array(...newRegexSwaps.values())
-            .filter(swapFilled);
+        const newDefinitions = new Array(...newSwaps.values())
+            .filter(swapFilled)
+            .filter(swap => swap.action === Action.Create)
+            .map(removeAction)
+        ;
 
-        const newPlainDefinitions = filledPlainDefinitions
-            .filter(swapNotDeleted)
-            .map(removeActionPlain);
-        const newRegexDefinitions = filledRegexDefinitions
-            .filter(swapNotDeleted)
-            .map(removeActionRegex);
+        const definitions = [
+            ...ogSwaps,
+            ...newDefinitions,
+        ];
 
         const savedData = await this.store.overwriteSwap({
             ...originalData,
-            plain: [
-                ...newPlainDefinitions,
-                ...ogPlainSwaps,
-            ],
-            regex: [
-                ...newRegexDefinitions,
-                ...ogRegexSwaps,
-            ]
+            definitions: reindexSwaps(definitions),
         });
 
         this.modifiedCallback(savedData);

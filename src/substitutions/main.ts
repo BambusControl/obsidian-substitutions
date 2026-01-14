@@ -35,12 +35,11 @@ export default class SubstitutionsPlugin extends Plugin {
         );
 
         const dataStore = new RootPluginDataStorage(dataLoader);
-        const plainSwapStorage = new UserSwapStorage(
+        const swapStore = new UserSwapStorage(
             dataStore,
             (swaps) => ExtensionHandler.replaceAndUpdate(
                 this.extensions,
-                swaps.plain,
-                swaps.regex,
+                swaps.definitions,
                 this.app.workspace
             )
         );
@@ -58,16 +57,15 @@ export default class SubstitutionsPlugin extends Plugin {
 
         console.info("Adding editor extension");
 
-        const currentPlainSwaps = await plainSwapStorage.getPlainSwaps();
-        const currentRegexSwaps = await plainSwapStorage.getRegexSwaps();
-        ExtensionHandler.replaceAndRegister(this.extensions, currentPlainSwaps, currentRegexSwaps, this);
+        const savedSwaps = await swapStore.getSwaps();
+        ExtensionHandler.replaceAndRegister(this.extensions, savedSwaps, this);
 
         console.info("Adding UI elements");
 
         this.addSettingTab(new SettingTab(
             this.app,
             this,
-            plainSwapStorage,
+            swapStore,
         ));
 
         this.addCommand({
@@ -76,7 +74,7 @@ export default class SubstitutionsPlugin extends Plugin {
             editorCallback: (editor, _) => {
                 new AddSwapDefModal(
                     this.app,
-                    plainSwapStorage,
+                    swapStore,
                     editor.getSelection()
                 ).open();
             },

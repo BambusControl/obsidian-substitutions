@@ -1,10 +1,9 @@
-import {RootDataStore} from "./rootDataStore";
 import {PersistCache} from "../../libraries/types/persistCache";
 import {SaveData} from "../../libraries/types/savedata/saveData";
 import {MetaFragment} from "../../libraries/types/savedata/metaFragment";
-import {SwapFragment} from "../../libraries/types/savedata/swapFragment";
+import {UserSwapFragment} from "../../libraries/types/savedata/userSwapFragment";
 
-export class RootPluginDataStorage implements RootDataStore {
+export class RootPluginDataStorage {
 
     constructor(
         private readonly storedData: PersistCache<SaveData>,
@@ -23,11 +22,11 @@ export class RootPluginDataStorage implements RootDataStore {
         return mergedData.meta;
     }
 
-    async getSwap(): Promise<SwapFragment> {
+    async getSwap(): Promise<UserSwapFragment> {
         return (await this.storedData.get()).swap;
     }
 
-    async overwriteSwap(data: SwapFragment): Promise<SwapFragment> {
+    async overwriteSwap(data: UserSwapFragment): Promise<UserSwapFragment> {
         const mergedData = await this.mergeData({
             swap: data,
         });

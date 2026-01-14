@@ -7,10 +7,11 @@ import {DataFragment} from "../../libraries/types/savedata/dataFragment";
 import {MetaFragment} from "../../libraries/types/savedata/metaFragment";
 import {SwapDataManager} from "./swapDataManager";
 import {CURRENT_DATA_VERSION} from "../../libraries/types/savedata/version";
-import {SaveData, SaveDataOf} from "../../libraries/types/savedata/saveData";
-import {PlainSwap} from "../../libraries/types/savedata/swapDef";
+import {SaveData, GenericSaveData} from "../../libraries/types/savedata/saveData";
 
-type MetaSaveDataFragments = Omit<SaveDataOf<DataFragment>, "meta"> & { meta: MetaFragment };
+import {SavedSwapDefinition} from "../../libraries/types/savedata/savedSwapDefinition";
+
+type MetaSaveDataFragments = Omit<GenericSaveData, "meta"> & { meta: MetaFragment };
 
 export class RootDataManager implements DataManager {
     constructor(
@@ -54,7 +55,7 @@ export class RootDataManager implements DataManager {
         console.groupEnd();
     }
 
-    private async initMeta(fragments: SaveDataOf<DataFragment>): Promise<MetaSaveDataFragments> {
+    private async initMeta(fragments: GenericSaveData): Promise<MetaSaveDataFragments> {
         /* Does the skeleton have data? */
         const initializedMeta = this.metaDm.initData(fragments.meta);
 
@@ -69,11 +70,11 @@ export class RootDataManager implements DataManager {
     }
 
     private initData(fragments: MetaSaveDataFragments): SaveData {
-        const filterData = this.swapDm.initData(fragments.swap);
+        const swapData = this.swapDm.initData(fragments.swap);
 
         return {
             ...fragments,
-            swap: filterData,
+            swap: swapData,
         };
     }
 
@@ -84,18 +85,18 @@ export class RootDataManager implements DataManager {
         console.info("Events to process", events);
 
         /* All the other updates see the events and handle them accordingly */
-        const filterData = await this.swapDm.updateData(initializedData.swap, events);
+        const swapData = await this.swapDm.updateData(initializedData.swap, events);
 
         console.info("Unprocessed events", events);
         metaData.events = Array.from(events);
 
         return {
             meta: metaData,
-            swap: filterData,
+            swap: swapData,
         };
     }
 
-    private static shapeLoadedData(loadedData: any): SaveDataOf<DataFragment> {
+    private static shapeLoadedData(loadedData: any): GenericSaveData {
         /* Check and create the shape of save-data if missing
          * Removing any element will remove it from save data
          */
@@ -129,16 +130,21 @@ export class RootDataManager implements DataManager {
 
         console.info("Migrating from data version 0.1.0");
 
+        const definitions = loadedData.substitutions.records.map(
+            (item, index) => ({
+                id: index,
+                kind: "plain",
+                enabled: item.enabled,
+                source: item.from,
+                replacement: item.to,
+            } as SavedSwapDefinition)
+        );
+
         return {
             swap: {
                 version: loadedData.version,
                 initialized: loadedData.initialized,
-                plain: loadedData.substitutions.records.map(r => ({
-                    source: r.from,
-                    replacement: r.to,
-                    enabled: r.enabled,
-                } as PlainSwap)),
-                regex: [],
+                definitions: definitions,
             },
         }
     }
