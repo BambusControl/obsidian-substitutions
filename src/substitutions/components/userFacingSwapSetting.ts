@@ -1,11 +1,14 @@
 import {ActionableSwap} from "../../libraries/types/savedata/actionable";
-import {Setting, TextComponent} from "obsidian";
+import {ExtraButtonComponent, Setting, TextComponent} from "obsidian";
 import {MaybePromise} from "../../libraries/types/maybePromise";
 import {swapFilled} from "../../libraries/helpers/swapFilled";
 import {checkJustFilled} from "../../libraries/helpers/checkJustFilled";
 import {unescapeSequences} from "../../libraries/helpers/sequences/unescapeSequences";
 import {escapeSequences} from "../../libraries/helpers/sequences/escapeSequences";
 import {Action} from "../../libraries/types/savedata/action";
+import {REGEX_LITERAL_PATTERN} from "../../libraries/helpers/createRegex";
+import {SwapKind} from "../../libraries/types/savedata/swapKind";
+
 
 export class UserFacingSwapSetting {
     public fromInput?: TextComponent;
@@ -15,7 +18,8 @@ export class UserFacingSwapSetting {
     constructor(
         private readonly _modSwapDef: ActionableSwap,
         private readonly _container: HTMLElement,
-        private readonly _onFill: () => MaybePromise<void> = () => {},
+        private readonly _onFill: () => MaybePromise<void> = () => {
+        },
     ) {
     }
 
@@ -36,6 +40,7 @@ export class UserFacingSwapSetting {
             setting.setClass("just-filled");
         }
 
+        /* Enable/disable swap */
         setting
             .addToggle((toggleInput) => {
                 toggleInput
@@ -46,7 +51,10 @@ export class UserFacingSwapSetting {
                     });
 
                 toggleInput.toggleEl.addClass("hide-if-empty");
-            })
+            });
+
+        /* from and to text inputs */
+        setting
             .addText((textInput) => {
                 textInput
                     .setPlaceholder("replace this")
@@ -55,7 +63,8 @@ export class UserFacingSwapSetting {
                         /* Don't unescape the input, it is always sanitized */
                         modSwapDef.source = input;
                     })
-                    .setValue(modSwapDef.source.toString());
+                    .setValue(modSwapDef.source.toString())
+                ;
                 this.fromInput = textInput;
             })
             .addExtraButton((button) => {
@@ -69,8 +78,8 @@ export class UserFacingSwapSetting {
                         modSwapDef.source = new_from;
                         modSwapDef.replacement = new_to;
 
-                        this.fromInput?.setValue(new_from);
-                        this.toInput?.setValue(new_to);
+                        this.fromInput!.setValue(new_from);
+                        this.toInput!.setValue(new_to);
                     });
 
                 button.extraSettingsEl.addClass("hide-if-empty");
@@ -89,20 +98,24 @@ export class UserFacingSwapSetting {
                     })
                     .setValue(escapeSequences(modSwapDef.replacement));
                 this.toInput = textInput;
-            })
+            });
+
+        /* Extra options */
+        setting
             .addExtraButton((button) => {
                 button
                     .setIcon("regex")
                     .setTooltip("Use Regular Expressions")
                     .onClick(() => {
                         modSwapDef.kind = modSwapDef.kind == "plain" ? "regex" : "plain";
-                        button.extraSettingsEl.toggleClass("is-active", modSwapDef.kind == "regex");
-                        setting.controlEl.toggleClass("regex-enabled", modSwapDef.kind == "regex");
+                        toggleRegEx(this.swapDef.kind, this.fromInput!!, setting, button);
                     });
 
-                button.extraSettingsEl.toggleClass("is-active", modSwapDef.kind == "regex");
-                setting.controlEl.toggleClass("regex-enabled", modSwapDef.kind == "regex");
+                toggleRegEx(this.swapDef.kind, this.fromInput!, setting, button);
             })
+
+        /* Remove swap */
+        setting
             .addExtraButton((button) => {
                 button
                     .setIcon("x")
@@ -119,4 +132,33 @@ export class UserFacingSwapSetting {
         return setting;
     }
 
+}
+
+function toggleRegEx(
+    swapKind: SwapKind,
+    patternInput: TextComponent,
+    regexSetting: Setting,
+    regexToggleButton: ExtraButtonComponent,
+) {
+    const regexEnabled = swapKind == "regex";
+    regexSetting.controlEl.toggleClass("regex-enabled", regexEnabled);
+    regexToggleButton.extraSettingsEl.toggleClass("is-active", regexEnabled);
+
+    const inputEl = patternInput.inputEl;
+
+    if (regexEnabled) {
+        const isValid = REGEX_LITERAL_PATTERN.test(patternInput.getValue());
+        inputEl.toggleClass("invalid", !isValid);
+
+        inputEl.setAttrs({
+            pattern: REGEX_LITERAL_PATTERN.toString(),
+            title: "Insert a Regular Expression in the format: /pattern$/flags" +
+                "\nThe `$` must be at the end of the pattern and flags `g` and `y` cannot be used" +
+                "\nExample `/hello b[a-z]+$/i` will match `Hello Bob`"
+        });
+    } else {
+        inputEl.removeAttribute("pattern");
+        inputEl.removeAttribute("title");
+        inputEl.removeClass("invalid");
+    }
 }

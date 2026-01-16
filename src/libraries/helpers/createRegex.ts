@@ -1,17 +1,19 @@
 import {SubstitutionsError} from "../../substitutions/errors/substitutionsError";
 
-export function createRegex(regexInput: string): RegExp {
-    // This expression has two parts.
-    // 1. The regex source:  Match every character from the start of the line to
-    //                       just before the final forward slash ('/').
-    // 2. The flags, if any: Match every character after the last slash,
-    //                       to the end of the line.
-    const regexPattern = /^\/(.+)\/([^/]*)$/;
-    const query = regexInput.match(regexPattern);
+/**
+ * A pattern for matching a valid regular expression: `/pattern$/flags`
+ * The flags `g` and `y` cannot be used because we only want a single match.
+ * The `$` inside the pattern is mandatory because we only want to match the tail of the text.
+ * @example /[a-z]+$/i
+ */
+export const REGEX_LITERAL_PATTERN = /^\/(.+)\$\/([^/gy]*)$/;
 
-    if (query == null) {
-        throw new SubstitutionsError("Invalid regex pattern: " + regexInput)
+export function createRegex(regexInput: string): RegExp {
+    const isRegex = REGEX_LITERAL_PATTERN.test(regexInput);
+
+    if (!isRegex) {
+        throw new SubstitutionsError(`Invalid regex pattern, expected \`/pattern/flags\`, got: ${regexInput}`)
     }
 
-    return new RegExp(query[1], query[2]);
+    return new RegExp(regexInput);
 }

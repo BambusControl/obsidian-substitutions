@@ -1,6 +1,5 @@
 import {PersistCache} from "../../libraries/types/persistCache";
 import {SaveData} from "../../libraries/types/savedata/saveData";
-import {MetaFragment} from "../../libraries/types/savedata/metaFragment";
 import {UserSwapFragment} from "../../libraries/types/savedata/userSwapFragment";
 
 export class RootPluginDataStorage {
@@ -8,18 +7,6 @@ export class RootPluginDataStorage {
     constructor(
         private readonly storedData: PersistCache<SaveData>,
     ) {
-    }
-
-    async getMeta(): Promise<MetaFragment> {
-        return (await this.storedData.get()).meta;
-    }
-
-    async overwriteMeta(data: MetaFragment): Promise<MetaFragment> {
-        const mergedData = await this.mergeData({
-            meta: data,
-        });
-
-        return mergedData.meta;
     }
 
     async getSwap(): Promise<UserSwapFragment> {

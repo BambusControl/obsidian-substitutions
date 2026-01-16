@@ -16,7 +16,7 @@ export function characterInputHandler(
             return false;
         }
 
-        console.assert(text.length === 1, "Registered more than one character, this shouldn't happen");
+        console.assert(text.length === 1, "Registered more than one character, this shouldn't happen", {text});
 
         const primarySelection = view.state.selection.main;
         const multipleChars = text.length !== 1;
