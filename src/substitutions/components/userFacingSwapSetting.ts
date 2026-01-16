@@ -149,16 +149,7 @@ function toggleRegEx(
     if (regexEnabled) {
         const isValid = REGEX_LITERAL_PATTERN.test(patternInput.getValue());
         inputEl.toggleClass("invalid", !isValid);
-
-        inputEl.setAttrs({
-            pattern: REGEX_LITERAL_PATTERN.toString(),
-            title: "Insert a Regular Expression in the format: /pattern$/flags" +
-                "\nThe `$` must be at the end of the pattern and flags `g` and `y` cannot be used" +
-                "\nExample `/hello b[a-z]+$/i` will match `Hello Bob`"
-        });
     } else {
-        inputEl.removeAttribute("pattern");
-        inputEl.removeAttribute("title");
         inputEl.removeClass("invalid");
     }
 }
