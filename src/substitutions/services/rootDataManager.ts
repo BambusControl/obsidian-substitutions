@@ -130,9 +130,10 @@ export class RootDataManager implements DataManager {
 
         console.info("Migrating from data version 0.1.0");
 
+        const numOfRecords = loadedData.substitutions.records.length;
         const definitions = loadedData.substitutions.records.map(
             (item, index) => ({
-                id: index,
+                id: numOfRecords - index, // We reversed the rendering, so we want them ordered backwards
                 kind: "plain",
                 enabled: item.enabled,
                 source: item.from,

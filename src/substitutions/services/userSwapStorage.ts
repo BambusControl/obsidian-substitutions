@@ -6,6 +6,7 @@ import {SavedSwapDefinition} from "../../libraries/types/savedata/savedSwapDefin
 import {RootPluginDataStorage} from "./rootPluginDataStorage";
 import {Action} from "src/libraries/types/savedata/action";
 import {reindexSwaps} from "../../libraries/helpers/reindexSwaps";
+import {swapsById} from "../../libraries/helpers/swapsById";
 
 export class UserSwapStorage {
 
@@ -16,7 +17,7 @@ export class UserSwapStorage {
     }
 
     async getSwaps(): Promise<SavedSwapDefinition[]> {
-        return (await this.store.getSwap()).definitions;
+        return (await this.store.getSwap()).definitions.sort(swapsById);
     }
 
     async overwriteDefinedSwaps(allSwaps: ActionableSwap[]): Promise<void> {

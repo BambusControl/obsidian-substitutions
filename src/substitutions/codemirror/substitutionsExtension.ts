@@ -6,11 +6,12 @@ import {stateUpdater} from "./extension/stateUpdater";
 import {SavedSwapDefinition} from "../../libraries/types/savedata/savedSwapDefinition";
 import {REGEX_LITERAL_PATTERN} from "../../libraries/helpers/createRegex";
 import {Notice} from "obsidian";
+import {swapsById} from "../../libraries/helpers/swapsById";
 
 export function substitutionsExtension(savedSwaps: SavedSwapDefinition[]): Extension {
     const enabledSwaps = savedSwaps
         .filter(swap => swap.enabled)
-        .sort((a, b) => a.id - b.id);
+        .sort(swapsById);
 
     /* Duplicate detection since we  */
     const invalidRegExPatterns = enabledSwaps
