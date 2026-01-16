@@ -27,8 +27,7 @@ export function isInitialSaveData(object: Partial<InitialSaveData>): object is I
         && "initialized" in object.substitutions
 
         && "records" in object.substitutions
-        && object.substitutions.records != null
-        && object.substitutions.records.every(r => isRecord(r))
+        && object.substitutions.records?.every(r => isRecord(r))
         ;
 }
 

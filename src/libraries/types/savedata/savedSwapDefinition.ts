@@ -1,8 +1,7 @@
 import {isTextSwap, TextSwap} from "./textSwap";
-import {SwapDefId} from "./swapDefId";
 
 export interface SavedSwapDefinition extends TextSwap {
-    id: SwapDefId,
+    id: number,
     enabled: boolean;
 }
 

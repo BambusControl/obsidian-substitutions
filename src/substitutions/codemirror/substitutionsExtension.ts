@@ -22,7 +22,8 @@ export function substitutionsExtension(savedSwaps: SavedSwapDefinition[]): Exten
         .filter(swap => swap.kind !== "regex" || REGEX_LITERAL_PATTERN.test(swap.source));
 
     if (invalidRegExPatterns.length > 0) {
-        new Notice(
+        /* Displayed by Obsidian */
+        const _ = new Notice(
             `Substitutions plugin detected invalid Regular Expression patterns (${invalidRegExPatterns.length})` +
             `which will be ignored.` +
             `\nYou can fix them within the settings menu.`,

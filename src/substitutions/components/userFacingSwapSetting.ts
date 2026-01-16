@@ -108,7 +108,7 @@ export class UserFacingSwapSetting {
                     .setTooltip("Use Regular Expressions")
                     .onClick(() => {
                         modSwapDef.kind = modSwapDef.kind == "plain" ? "regex" : "plain";
-                        toggleRegEx(this.swapDef.kind, this.fromInput!!, setting, button);
+                        toggleRegEx(this.swapDef.kind, this.fromInput!, setting, button);
                     });
 
                 toggleRegEx(this.swapDef.kind, this.fromInput!, setting, button);

@@ -1,5 +1,3 @@
-import {SubstitutionsError} from "../../substitutions/errors/substitutionsError";
-
 /**
  * A pattern for matching a valid regular expression: `/pattern$/flags`
  * The flags `g` and `y` cannot be used because we only want a single match.
@@ -8,12 +6,14 @@ import {SubstitutionsError} from "../../substitutions/errors/substitutionsError"
  */
 export const REGEX_LITERAL_PATTERN = /^\/(.+)\$\/([^/gy]*)$/;
 
-export function createRegex(regexInput: string): RegExp {
-    const isRegex = REGEX_LITERAL_PATTERN.test(regexInput);
+export function createRegex(regexInput: string): RegExp | null {
+    const match = REGEX_LITERAL_PATTERN.exec(regexInput);
 
-    if (!isRegex) {
-        throw new SubstitutionsError(`Invalid regex pattern, expected \`/pattern/flags\`, got: ${regexInput}`)
+    if (match == null) {
+        return null;
     }
 
-    return new RegExp(regexInput);
+    const source = `${match[1]}$`;
+    const flags = match[2] ?? "";
+    return new RegExp(source, flags);
 }
