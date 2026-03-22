@@ -7,15 +7,16 @@ These are my notes on the development of the plugin.
 1. From the `develop` branch, create a release branch `release/X.Y.Z`
 2. Go to [package.json](./package.json) and overwrite `X.Y.Z` with new version throughout the whole project (double check if save data version needs to be updated)
 3. Update the [package-lock](./package-lock.json) file: `npm install`
-4. Export save data schema: `npm run export-schema`
-5. Run tests: `npm run test`
-6. Run build and test out the plugin in obsidian manually: `npm run build`
-7. Commit as "Version `X.Y.Z`"
-8. Push, and fix if build fails, otherwise merge to the `main` branch
-9. Create a tag with the label `X.Y.Z`
-10. GitHub Actions will create a [release](https://github.com/BambusControl/obsidian-unicode-search/releases)
-11. Add release notes to the release
-12. Fast-forward the `develop` branch
+4. Run `npm audit fix`
+5. Export save data schema: `npm run export-schema`
+6. Run tests: `npm run test`
+7. Run build and test out the plugin in obsidian manually: `npm run build`
+8. Commit as "Version `X.Y.Z`"
+9. Push, and fix if build fails, otherwise merge to the `main` branch
+10. Create a tag with the label `X.Y.Z`
+11. GitHub Actions will create a [release](https://github.com/BambusControl/obsidian-unicode-search/releases)
+12. Add release notes to the release
+13. Fast-forward the `develop` branch
 
 ## Features to Add
 
