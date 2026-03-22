@@ -9,6 +9,10 @@ import {Action} from "../../libraries/types/savedata/action";
 import {REGEX_LITERAL_PATTERN} from "../../libraries/helpers/createRegex";
 import {SwapKind} from "../../libraries/types/savedata/swapKind";
 
+const PLAIN_SOURCE_PLACEHOLDER = "replace this";
+const REGEX_SOURCE_PLACEHOLDER = "/Day [0-9]$/i";
+const REGEX_VALIDATION_HINT = "Use /pattern$/flags format, e.g. /Day [0-9]$/i";
+
 
 export class UserFacingSwapSetting {
     public fromInput?: TextComponent;
@@ -57,7 +61,7 @@ export class UserFacingSwapSetting {
         setting
             .addText((textInput) => {
                 textInput
-                    .setPlaceholder("replace this")
+                    .setPlaceholder(PLAIN_SOURCE_PLACEHOLDER)
                     .onChange((input) => {
                         console.info("Changing from", input);
                         /* Don't unescape the input, it is always sanitized */
@@ -134,7 +138,7 @@ export class UserFacingSwapSetting {
 
 }
 
-function toggleRegEx(
+export function toggleRegEx(
     swapKind: SwapKind,
     patternInput: TextComponent,
     regexSetting: Setting,
@@ -149,7 +153,11 @@ function toggleRegEx(
     if (regexEnabled) {
         const isValid = REGEX_LITERAL_PATTERN.test(patternInput.getValue());
         inputEl.toggleClass("invalid", !isValid);
+        patternInput.setPlaceholder(REGEX_SOURCE_PLACEHOLDER);
+        inputEl.title = isValid ? "" : REGEX_VALIDATION_HINT;
     } else {
         inputEl.removeClass("invalid");
+        patternInput.setPlaceholder(PLAIN_SOURCE_PLACEHOLDER);
+        inputEl.title = "";
     }
 }
