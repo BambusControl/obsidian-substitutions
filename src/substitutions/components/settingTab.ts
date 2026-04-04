@@ -49,7 +49,7 @@ export class SettingTab extends PluginSettingTab {
         new Setting(this.containerEl)
             .setClass("swap-search")
             .setName("Search substitutions")
-            .setDesc("Filter substitutions by source, replacement, type, or enabled state.")
+            .setDesc("Filter substitutions by source or replacement text.")
             .addSearch((searchInput) => {
                 searchInput
                     .setPlaceholder("Search substitutions")

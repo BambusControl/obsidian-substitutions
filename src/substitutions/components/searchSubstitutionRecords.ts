@@ -17,8 +17,7 @@ export function shouldShowSwapForQuery(
         return true;
     }
 
-    const searchableText = `${swap.source} ${swap.replacement}`
-        .toLowerCase();
+    const searchableText = `${swap.source} ${swap.replacement}`.toLowerCase();
 
     return searchableText.includes(query);
 }
