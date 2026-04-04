@@ -24,8 +24,6 @@ export class UserFacingSwapSetting {
         private readonly _container: HTMLElement,
         private readonly _onFill: () => MaybePromise<void> = () => {
         },
-        private readonly _onChange: () => void = () => {
-        },
     ) {
     }
 
@@ -54,7 +52,6 @@ export class UserFacingSwapSetting {
                     .setValue(modSwapDef.enabled)
                     .onChange((value) => {
                         modSwapDef.enabled = value;
-                        this._onChange();
                     });
 
                 toggleInput.toggleEl.addClass("hide-if-empty");
@@ -69,7 +66,6 @@ export class UserFacingSwapSetting {
                         console.info("Changing from", input);
                         /* Don't unescape the input, it is always sanitized */
                         modSwapDef.source = input;
-                        this._onChange();
                     })
                     .setValue(modSwapDef.source.toString())
                 ;
@@ -88,7 +84,6 @@ export class UserFacingSwapSetting {
 
                         this.fromInput!.setValue(new_from);
                         this.toInput!.setValue(new_to);
-                        this._onChange();
                     });
 
                 button.extraSettingsEl.addClass("hide-if-empty");
@@ -99,7 +94,6 @@ export class UserFacingSwapSetting {
                     .onChange(async (input) => {
                         console.info("Changing to", input);
                         modSwapDef.replacement = unescapeSequences(input);
-                        this._onChange();
                         if (checkJustFilled(setting, modSwapDef.replacement)) {
                             setting.setClass("just-filled");
                             await this._onFill();
@@ -119,7 +113,6 @@ export class UserFacingSwapSetting {
                     .onClick(() => {
                         modSwapDef.kind = modSwapDef.kind == "plain" ? "regex" : "plain";
                         toggleRegEx(this.swapDef.kind, this.fromInput!, setting, button);
-                        this._onChange();
                     });
 
                 toggleRegEx(this.swapDef.kind, this.fromInput!, setting, button);
@@ -134,7 +127,6 @@ export class UserFacingSwapSetting {
                     .onClick(() => {
                         modSwapDef.action = Action.Delete;
                         setting.settingEl.hide();
-                        this._onChange();
                     });
 
                 button.extraSettingsEl.addClass("hide-if-empty");
