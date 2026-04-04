@@ -3,12 +3,15 @@ import {UserSwapStorage} from "../services/userSwapStorage";
 import {UserFacingSwapSetting} from "./userFacingSwapSetting";
 import {addNewUserFacingSwapSetting} from "./addNewUserFacingSwapSetting";
 import {toActionable} from "../../libraries/helpers/toActionable";
+import {normalizeSearchQuery, shouldShowSwapForQuery} from "./searchSubstitutionRecords";
+import {swapFilled} from "../../libraries/helpers/swapFilled";
 
 export class SettingTab extends PluginSettingTab {
 
     private rendered = false;
     private storedSwaps: UserFacingSwapSetting[] = [];
     private newSwaps: UserFacingSwapSetting[] = [];
+    private searchQuery = "";
 
     constructor(
         app: App,
@@ -43,18 +46,33 @@ export class SettingTab extends PluginSettingTab {
             )
         ;
 
+        new Setting(this.containerEl)
+            .setClass("swap-search")
+            .setName("Search substitutions")
+            .setDesc("Filter substitutions by source, replacement, type, or enabled state.")
+            .addSearch((searchInput) => {
+                searchInput
+                    .setPlaceholder("Search substitutions")
+                    .setValue(this.searchQuery)
+                    .onChange((value) => {
+                        this.searchQuery = normalizeSearchQuery(value);
+                        this.applySearchFilter();
+                    });
+            });
+
         const newSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "new"]});
         const oldSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list"]});
 
         this.storedSwaps = (await this.userSwap.getSwaps())
             .map(toActionable)
-            .map(swap => new UserFacingSwapSetting(swap, oldSwapsContainer));
+            .map(swap => new UserFacingSwapSetting(swap, oldSwapsContainer, undefined, () => this.applySearchFilter()));
 
-        addNewUserFacingSwapSetting(newSwapsContainer, this.newSwaps);
+        addNewUserFacingSwapSetting(newSwapsContainer, this.newSwaps, undefined, () => this.applySearchFilter());
 
         for (const swapSetting of this.swapSettings) {
             swapSetting.display();
         }
+        this.applySearchFilter();
 
         this.rendered = true;
     }
@@ -66,5 +84,23 @@ export class SettingTab extends PluginSettingTab {
         return this.userSwap.overwriteDefinedSwaps(
             this.swapSettings.map(swap => swap.swapDef),
         );
+    }
+
+    private applySearchFilter(): void {
+        for (const swapSetting of this.swapSettings) {
+            const visible = shouldShowSwapForQuery(swapSetting.swapDef, this.searchQuery);
+            swapSetting.display().settingEl.toggleClass("search-hidden", !visible);
+        }
+
+        this.ensureNewSwapVisibility();
+    }
+
+    private ensureNewSwapVisibility(): void {
+        for (const swapSetting of this.newSwaps) {
+            if (!swapFilled(swapSetting.swapDef)) {
+                swapSetting.display().settingEl.removeClass("search-hidden");
+                return;
+            }
+        }
     }
 }
