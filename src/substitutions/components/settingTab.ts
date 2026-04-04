@@ -1,9 +1,9 @@
-import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
+import {App, debounce, Debouncer, Plugin, PluginSettingTab, Setting} from "obsidian";
 import {UserSwapStorage} from "../services/userSwapStorage";
 import {UserFacingSwapSetting} from "./userFacingSwapSetting";
 import {addNewUserFacingSwapSetting} from "./addNewUserFacingSwapSetting";
 import {toActionable} from "../../libraries/helpers/toActionable";
-import {normalizeSearchQuery, shouldShowSwapForQuery} from "./searchSubstitutionRecords";
+import {SavedSwapDefinition} from "../../libraries/types/savedata/savedSwapDefinition";
 
 export class SettingTab extends PluginSettingTab {
 
@@ -25,6 +25,22 @@ export class SettingTab extends PluginSettingTab {
             ...this.newSwaps,
             ...this.storedSwaps,
         ];
+    }
+
+    private static filterSwaps(swapSettings: any, filterQuery: string): void {
+        const query = filterQuery.trim().toLowerCase()
+
+        for (const swapSetting of swapSettings) {
+            const visible = SettingTab.shouldShowSwapForQuery(swapSetting.swapDef, query);
+            swapSetting.display().settingEl.toggleClass("search-hidden", !visible);
+        }
+    }
+
+    private static shouldShowSwapForQuery(swap: SavedSwapDefinition, query: string): boolean {
+        return query === ""
+            || (swap.source ?? "").toLowerCase().includes(query)
+            || (swap.replacement ?? "").toLowerCase().includes(query)
+            ;
     }
 
     override async display(): Promise<void> {
@@ -53,10 +69,10 @@ export class SettingTab extends PluginSettingTab {
                 searchInput
                     .setPlaceholder("Search substitutions")
                     .setValue(this.searchQuery)
-                    .onChange((value) => {
-                        this.searchQuery = normalizeSearchQuery(value);
-                        this.applySearchFilter();
-                    });
+                    .onChange(debounced((value) => {
+                        this.searchQuery = value;
+                        SettingTab.filterSwaps(this.swapSettings, this.searchQuery);
+                    }));
             });
 
         const newSwapsContainer = this.containerEl.createDiv({cls: ["swap-definition-list", "new"]});
@@ -71,7 +87,7 @@ export class SettingTab extends PluginSettingTab {
         for (const swapSetting of this.swapSettings) {
             swapSetting.display();
         }
-        this.applySearchFilter();
+        SettingTab.filterSwaps(this.swapSettings, this.searchQuery);
 
         this.rendered = true;
     }
@@ -84,11 +100,9 @@ export class SettingTab extends PluginSettingTab {
             this.swapSettings.map(swap => swap.swapDef),
         );
     }
+}
 
-    private applySearchFilter(): void {
-        for (const swapSetting of this.swapSettings) {
-            const visible = shouldShowSwapForQuery(swapSetting.swapDef, this.searchQuery);
-            swapSetting.display().settingEl.toggleClass("search-hidden", !visible);
-        }
-    }
+
+function debounced<T extends unknown[], V>(func: (...args: [...T]) => V): Debouncer<T, V> {
+    return debounce(func, 200, true);
 }
