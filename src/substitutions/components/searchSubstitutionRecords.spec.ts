@@ -43,13 +43,13 @@ describe("searchSubstitutionRecords", () => {
         }, "gamma")).toBe(false);
     });
 
-    it("keeps incomplete records visible while filtering", () => {
+    it("hides incomplete records when they do not match the query", () => {
         expect(shouldShowSwapForQuery({
             id: 0,
             enabled: true,
             kind: "plain",
             source: "",
             replacement: "",
-        }, "anything")).toBe(true);
+        }, "anything")).toBe(false);
     });
 });
