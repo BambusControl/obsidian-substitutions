@@ -1,5 +1,5 @@
 {
-    "$id": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json",
+    "$id": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "DataEvent": {
@@ -11,7 +11,7 @@
                 "events": {
                     "description": "A collection of unique data events.",
                     "items": {
-                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/DataEvent"
+                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/DataEvent"
                     },
                     "type": "array"
                 },
@@ -19,11 +19,11 @@
                     "type": "boolean"
                 },
                 "pluginVersion": {
-                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/PluginVersion",
+                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/PluginVersion",
                     "description": "Latest used version of the plugin which used this data"
                 },
                 "version": {
-                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/SaveDataVersion"
+                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/SaveDataVersion"
                 }
             },
             "required": [
@@ -46,7 +46,8 @@
                 "0.4.0",
                 "0.4.1",
                 "0.4.2",
-                "0.5.0"
+                "0.5.0",
+                "0.6.0"
             ],
             "type": "string"
         },
@@ -67,7 +68,7 @@
                     "type": "number"
                 },
                 "kind": {
-                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/SwapKind"
+                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/SwapKind"
                 },
                 "replacement": {
                     "type": "string"
@@ -98,7 +99,7 @@
                 "definitions": {
                     "description": "Definitions of swaps",
                     "items": {
-                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/SavedSwapDefinition"
+                        "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/SavedSwapDefinition"
                     },
                     "type": "array"
                 },
@@ -106,7 +107,7 @@
                     "type": "boolean"
                 },
                 "version": {
-                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/SaveDataVersion"
+                    "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/SaveDataVersion"
                 }
             },
             "required": [
@@ -120,10 +121,10 @@
     "description": "Structure of `data.json`, where each fragment is a self-managed data fragment",
     "properties": {
         "meta": {
-            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/MetaFragment"
+            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/MetaFragment"
         },
         "swap": {
-            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.5.0/resources/save-data-schema.json#/definitions/UserSwapFragment"
+            "$ref": "https://raw.githubusercontent.com/BambusControl/obsidian-substitutions/0.6.0/resources/save-data-schema.json#/definitions/UserSwapFragment"
         }
     },
     "required": [
