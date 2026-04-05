@@ -25,7 +25,7 @@ export function substitutionsExtension(savedSwaps: SavedSwapDefinition[]): Exten
         /* Displayed by Obsidian */
         const _ = new Notice(
             `Substitutions plugin detected invalid Regular Expression patterns (${invalidRegExPatterns.length})` +
-            `which will be ignored.` +
+            ` which will be ignored.` +
             `\nYou can fix them within the settings menu.`,
             5 * 10000,
         )
