@@ -5,6 +5,8 @@ import {effects} from "../constants/Effects";
 import {sliceDoc} from "../../../libraries/helpers/sliceDoc";
 import {TextSwap} from "../../../libraries/types/savedata/textSwap";
 
+const MAP_POS_RIGHT_AFFINITY = 1;
+
 export function textSubstitutionsField(
     swaps: TextSwap[],
 ): StateField<SubstitutionsState> {
@@ -27,7 +29,10 @@ export function textSubstitutionsField(
                     ...output,
                     replacement: {
                         ...output.replacement,
-                        endPosition: transaction.changes.mapPos(output.replacement.endPosition, 1),
+                        endPosition: transaction.changes.mapPos(
+                            output.replacement.endPosition,
+                            MAP_POS_RIGHT_AFFINITY
+                        ),
                     },
                 };
             }
