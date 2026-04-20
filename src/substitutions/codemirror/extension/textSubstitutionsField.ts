@@ -22,6 +22,16 @@ export function textSubstitutionsField(
         update(current, transaction) {
             let output = current;
 
+            if (transaction.docChanged && output.replacement != null) {
+                output = {
+                    ...output,
+                    replacement: {
+                        ...output.replacement,
+                        endPosition: transaction.changes.mapPos(output.replacement.endPosition, 1),
+                    },
+                };
+            }
+
             for (const effect of transaction.effects) {
 
                 if (effect.is(effects.update)) {
