@@ -1,6 +1,6 @@
 {
   "name": "obsidian-substitutions",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Obsidian plugin for substituting fragments of text.",
   "main": "main.js",
   "scripts": {
