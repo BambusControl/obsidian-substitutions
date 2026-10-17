@@ -1,48 +1,26 @@
-import {EditorState, Extension, StateField, TransactionSpec} from "@codemirror/state";
+import {Extension, StateField} from "@codemirror/state";
 import {EditorView} from "@codemirror/view";
-import {effects} from "../constants/Effects";
-import {defaultState} from "../constants/defaultState";
 import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
-import {replaceText} from "../transaction/replaceText";
-import {EditorTextReplacement} from "../../../libraries/types/textReplacement";
+import {revertReplacement} from "../transaction/revertReplacement";
 
 export function backwardDeleteHandler(
     substitutionsField: StateField<SubstitutionsState>
 ): Extension {
     return EditorView.updateListener.of((view) => {
-        const is_backspace = view.transactions.some(t => t.isUserEvent("delete.backward"));
+        const backspaceTransaction = view.transactions.find(t => t.isUserEvent("delete.backward") && t.docChanged);
 
-        if (!is_backspace) {
+        if (backspaceTransaction == null) {
             return;
         }
 
-        const state = view.state;
-        const selection = state.selection.main;
-        const field = state.field(substitutionsField, false) ?? defaultState();
-
-        if (selection.to !== field.replacement?.endPosition) {
-            /* Backspace doesn't match position of last substitution: NOOP */
+        const replacement = backspaceTransaction.startState.field(substitutionsField, false)?.replacement;
+        if (replacement == null) {
             return;
         }
 
-        const transactions = revertReplacement(state, field.replacement);
-        view.view.dispatch(...transactions);
+        const revert = revertReplacement(backspaceTransaction, replacement);
+        if (revert != null) {
+            view.view.dispatch(revert);
+        }
     });
-}
-
-function revertReplacement(state: EditorState, replacement: EditorTextReplacement): TransactionSpec[] {
-    /* We could revert of any saved substitution record
-     * if we detect revert matches the same way as forward matches.
-     * (check the target string with "to" instead of "from")
-     * For now, we only revert the last substitution.
-     */
-
-    const revertText = replaceText(state, replacement.to, replacement.from, true);
-    const revertEffect = state.update({
-        effects: [
-            effects.revert.of(null),
-        ]
-    });
-
-    return [revertText, revertEffect];
 }

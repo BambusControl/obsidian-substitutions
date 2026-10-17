@@ -1,9 +1,11 @@
-import {StateField} from "@codemirror/state";
+import {StateField, Transaction} from "@codemirror/state";
 import {SubstitutionsState} from "../../../libraries/types/substitutionsState";
 import {defaultState} from "../constants/defaultState";
 import {effects} from "../constants/Effects";
 import {sliceDoc} from "../../../libraries/helpers/sliceDoc";
 import {TextSwap} from "../../../libraries/types/savedata/textSwap";
+import {relocateReplacement} from "./relocateReplacement";
+
 
 export function textSubstitutionsField(
     swaps: TextSwap[],
@@ -19,22 +21,24 @@ export function textSubstitutionsField(
             return newDefaultState();
         },
 
-        update(current, transaction) {
-            let output = current;
+        update(current: SubstitutionsState, transaction: Transaction) {
+            let state = current;
+
+            state = relocateReplacement(transaction, state);
 
             for (const effect of transaction.effects) {
 
                 if (effect.is(effects.update)) {
 
-                    output = {
-                        ...output,
+                    state = {
+                        ...state,
                         cache: sliceDoc(transaction.state),
                     };
 
                 } else if (effect.is(effects.replace)) {
 
-                    output = {
-                        ...output,
+                    state = {
+                        ...state,
                         replacement: {
                             from: effect.value.from,
                             to: effect.value.to,
@@ -44,15 +48,15 @@ export function textSubstitutionsField(
 
                 } else if (effect.is(effects.revert)) {
 
-                    output = {
-                        ...output,
+                    state = {
+                        ...state,
                         replacement: null,
                     };
 
                 }
             }
 
-            return output;
+            return state;
         },
     });
 
