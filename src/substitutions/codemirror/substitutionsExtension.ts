@@ -2,6 +2,7 @@ import {Extension} from "@codemirror/state";
 import {characterInputHandler} from "./extension/characterInputHandler";
 import {backwardDeleteHandler} from "./extension/backwardDeleteHandler";
 import {textSubstitutionsField} from "./extension/textSubstitutionsField";
+import {replacementFeedbackField} from "./extension/replacementFeedbackField";
 import {stateUpdater} from "./extension/stateUpdater";
 import {SavedSwapDefinition} from "../../libraries/types/savedata/savedSwapDefinition";
 import {REGEX_LITERAL_PATTERN} from "../../libraries/helpers/createRegex";
@@ -35,6 +36,7 @@ export function substitutionsExtension(savedSwaps: SavedSwapDefinition[]): Exten
 
     return [
         textSubstitutions,
+        replacementFeedbackField(textSubstitutions),
         stateUpdater(),
         characterInputHandler(textSubstitutions),
         backwardDeleteHandler(textSubstitutions),

@@ -49,3 +49,35 @@
     }
 
 }
+
+.plugin.substitutions.editor.swap-revertible {
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--text-accent);
+    text-decoration-skip: ink;
+    text-decoration-thickness: 1px;
+}
+
+.plugin.substitutions.editor.swap-performed {
+    animation: subs-flash;
+    animation-duration: var(--anim-duration-fast);
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes subs-flash {
+    from {
+        color: var(--text-accent);
+        text-shadow: 0 0 1px var(--text-accent);
+    }
+
+    to {
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .swap-performed {
+        animation: none;
+    }
+
+}
